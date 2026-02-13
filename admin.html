@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Lottery - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #10b981;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #374151;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        button.danger {
+            background: #dc2626;
+        }
+
+        button.danger:hover {
+            background: #b91c1c;
+        }
+
+        .winners-table {
+            background: #374151;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #10b981;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #4b5563;
+        }
+
+        tr:hover {
+            background: #4b5563;
+        }
+
+        .winner-code {
+            font-family: monospace;
+            background: #1f2937;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #fbbf24;
+        }
+
+        .numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .number-badge {
+            background: #667eea;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            background: #374151;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], select {
+            background: #1f2937;
+            border: 1px solid #4b5563;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .export-btn {
+            background: #3b82f6;
+        }
+
+        .export-btn:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Car Lottery Admin Dashboard</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalWinners">0</div>
+                <div class="stat-label">Total Winners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPlays">0</div>
+                <div class="stat-label">Total Plays</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="winRate">0%</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayWinners">0</div>
+                <div class="stat-label">Winners Today</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="refreshData()">🔄 Refresh</button>
+            <button class="export-btn" onclick="exportWinners()">📥 Export CSV</button>
+            <button class="danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+
+        <div class="filter-section">
+            <input type="text" id="searchCode" placeholder="Search by winner code..." onkeyup="filterWinners()">
+            <select id="filterLine" onchange="filterWinners()">
+                <option value="">All Winning Lines</option>
+                <option value="All Green Cars">All Green Cars</option>
+                <option value="All Red Cars">All Red Cars</option>
+                <option value="All Yellow Cars">All Yellow Cars</option>
+                <option value="All Pink Cars">All Pink Cars</option>
+                <option value="All Blue Cars">All Blue Cars</option>
+                <option value="All Ferrari F40s">All Ferrari F40s</option>
+                <option value="All McLaren F1s">All McLaren F1s</option>
+                <option value="All Tesla Roadsters">All Tesla Roadsters</option>
+                <option value="All Lamborghini Miuras">All Lamborghini Miuras</option>
+                <option value="All Porsche 959s">All Porsche 959s</option>
+            </select>
+        </div>
+
+        <div id="winnersContainer"></div>
+    </div>
+
+    <script>
+        let allWinners = [];
+
+        function loadData() {
+            allWinners = JSON.parse(localStorage.getItem('winners') || '[]');
+            updateStats();
+            displayWinners(allWinners);
+        }
+
+        function updateStats() {
+            const totalWinners = allWinners.length;
+            const totalPlays = parseInt(localStorage.getItem('totalPlays') || '0');
+            const winRate = totalPlays > 0 ? ((totalWinners / totalPlays) * 100).toFixed(2) : 0;
+            
+            // Get today's winners
+            const today = new Date().toDateString();
+            const todayWinners = allWinners.filter(w => {
+                const winDate = new Date(w.timestamp).toDateString();
+                return winDate === today;
+            }).length;
+
+            document.getElementById('totalWinners').textContent = totalWinners;
+            document.getElementById('totalPlays').textContent = totalPlays;
+            document.getElementById('winRate').textContent = winRate + '%';
+            document.getElementById('todayWinners').textContent = todayWinners;
+        }
+
+        function displayWinners(winners) {
+            const container = document.getElementById('winnersContainer');
+            
+            if (winners.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏆</div>
+                        <h2>No winners yet!</h2>
+                        <p>Winners will appear here as they play the game.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const reversedWinners = [...winners].reverse(); // Show newest first
+
+            const tableHTML = `
+                <div class="winners-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Winner Code</th>
+                                <th>Numbers</th>
+                                <th>Winning Line</th>
+                                <th>Game</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reversedWinners.map(winner => `
+                                <tr>
+                                    <td>${new Date(winner.timestamp).toLocaleString()}</td>
+                                    <td><span class="winner-code">${winner.code}</span></td>
+                                    <td>
+                                        <div class="numbers">
+                                            ${winner.numbers.map(n => `<span class="number-badge">${n}</span>`).join('')}
+                                        </div>
+                                    </td>
+                                    <td>${winner.winningLine}</td>
+                                    <td>#${winner.gameId}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        function filterWinners() {
+            const searchCode = document.getElementById('searchCode').value.toLowerCase();
+            const filterLine = document.getElementById('filterLine').value;
+
+            let filtered = allWinners;
+
+            if (searchCode) {
+                filtered = filtered.filter(w => w.code.toLowerCase().includes(searchCode));
+            }
+
+            if (filterLine) {
+                filtered = filtered.filter(w => w.winningLine === filterLine);
+            }
+
+            displayWinners(filtered);
+        }
+
+        function refreshData() {
+            loadData();
+        }
+
+        function exportWinners() {
+            if (allWinners.length === 0) {
+                alert('No winners to export!');
+                return;
+            }
+
+            // Create CSV
+            const headers = ['Date/Time', 'Winner Code', 'Numbers', 'Winning Line', 'Game ID'];
+            const rows = allWinners.map(w => [
+                new Date(w.timestamp).toISOString(),
+                w.code,
+                w.numbers.join('-'),
+                w.winningLine,
+                w.gameId
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            csv += rows.map(row => row.join(',').replace(/,/g, ',')).join('\n');
+
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `car-lottery-winners-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ Are you sure? This will delete ALL winner data permanently!')) {
+                if (confirm('This cannot be undone! Are you REALLY sure?')) {
+                    localStorage.removeItem('winners');
+                    localStorage.removeItem('totalPlays');
+                    allWinners = [];
+                    loadData();
+                    alert('All data cleared!');
+                }
+            }
+        }
+
+        // Load data on page load
+        loadData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>
