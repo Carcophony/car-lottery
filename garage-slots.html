@@ -50,6 +50,17 @@
             max-width: 800px;
             width: 100%;
         }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+        }
 
         .header {
             text-align: center;
@@ -58,7 +69,7 @@
 
         .title {
             font-family: 'Racing Sans One', cursive;
-            font-size: clamp(2rem, 6vw, 4rem);
+            font-size: clamp(1.5rem, 6vw, 4rem);
             color: #ffcc00;
             text-shadow: 
                 0 0 10px #ff0000,
@@ -71,6 +82,13 @@
             animation: neonFlicker 3s ease-in-out infinite alternate;
             letter-spacing: 0.1em;
             margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: clamp(1.2rem, 8vw, 2.5rem);
+                letter-spacing: 0.05em;
+            }
         }
 
         @keyframes neonFlicker {
@@ -97,6 +115,14 @@
                 inset 0 0 60px rgba(0, 0, 0, 0.8);
             position: relative;
             overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .slot-machine {
+                padding: 20px 15px;
+                border-width: 3px;
+                border-radius: 20px;
+            }
         }
 
         .slot-machine::before {
@@ -128,6 +154,13 @@
             border-radius: 15px;
             border: 2px solid #444;
         }
+        
+        @media (max-width: 768px) {
+            .info-bar {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+        }
 
         .info-item {
             text-align: center;
@@ -145,6 +178,16 @@
             font-weight: 900;
             color: #ffcc00;
             text-shadow: 0 0 10px #ffcc00;
+        }
+        
+        @media (max-width: 768px) {
+            .info-label {
+                font-size: 0.65rem;
+            }
+            
+            .info-value {
+                font-size: 1.2rem;
+            }
         }
 
         .reels-container {
@@ -297,6 +340,13 @@
             transition: all 0.1s ease;
             position: relative;
             overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .pull-handle {
+                padding: 18px 50px;
+                font-size: 1.6rem;
+            }
         }
 
         .pull-handle::before {
@@ -859,10 +909,10 @@
                 strip.className = 'reel-strip';
                 strip.id = `strip${i}`;
                 
-                // Create a long strip of cars for smooth animation
-                // We'll use 40 cars (gives lots of exploration room!)
+                // Create a MASSIVE strip of cars for infinite scrolling
+                // 200 cars = nearly impossible to hit limits in normal play
                 const carNumbers = Object.keys(CARS).map(Number);
-                for (let j = 0; j < 40; j++) {
+                for (let j = 0; j < 200; j++) {
                     const carNum = carNumbers[Math.floor(Math.random() * carNumbers.length)];
                     const item = document.createElement('div');
                     item.className = 'reel-item';
@@ -1194,17 +1244,17 @@
             // Direction: positive = up (less negative), negative = down (more negative)
             const newPosition = reelPositions[reelIndex] + (direction * 140);
             
-            // Safety check - don't go out of bounds
-            // We have 40 items in the strip, each 140px tall
-            // Position -140 shows item 1 in center, -5320 shows item 38 in center
-            const maxPosition = -140;   // Most positive (item 1 centered)
-            const minPosition = -5320;  // Most negative (item 38 centered)
+            // Safety check - with 200 cars, limits are VERY generous
+            // Position -140 shows item 1 in center, -27720 shows item 198 in center
+            const maxPosition = -140;     // Most positive (item 1 centered)
+            const minPosition = -27720;   // Most negative (item 198 centered)
             
             if (newPosition <= maxPosition && newPosition >= minPosition) {
                 reelPositions[reelIndex] = newPosition;
                 updateReelPosition(reelIndex, true);
             } else {
                 // Out of bounds - restore the nudge
+                // This should RARELY happen with 200 cars!
                 nudgesAvailable++;
                 updateDisplay();
                 return;
