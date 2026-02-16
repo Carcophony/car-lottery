@@ -119,7 +119,7 @@
         
         @media (max-width: 768px) {
             .slot-machine {
-                padding: 20px 15px;
+                padding: 20px 10px;
                 border-width: 3px;
                 border-radius: 20px;
             }
@@ -157,7 +157,7 @@
         
         @media (max-width: 768px) {
             .info-bar {
-                padding: 10px;
+                padding: 10px 8px;
                 margin-bottom: 15px;
             }
         }
@@ -182,11 +182,11 @@
         
         @media (max-width: 768px) {
             .info-label {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
             
             .info-value {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
         }
 
@@ -200,422 +200,510 @@
         
         @media (max-width: 768px) {
             .reels-container {
-                gap: 5px;
-                margin: 15px 0;
-                transform: scale(1.3);
-                transform-origin: center;
+                gap: 4px;
+                margin: 20px 0;
             }
         }
 
         .reel-wrapper {
-            flex: 1;
-            max-width: 140px;
+            position: relative;
         }
 
         .reel {
-            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-            border: 3px solid #333;
-            border-radius: 15px;
-            height: 420px;
+            width: 80px;
+            height: 80px;
             overflow: hidden;
+            background: linear-gradient(180deg, #0a0a0a, #1a1a1a);
+            border: 3px solid #333;
+            border-radius: 12px;
             position: relative;
             box-shadow: 
-                inset 0 0 20px rgba(0, 0, 0, 0.9),
-                0 4px 10px rgba(0, 0, 0, 0.5);
+                inset 0 0 20px rgba(0, 0, 0, 0.8),
+                0 4px 8px rgba(0, 0, 0, 0.5);
         }
-
-        /* Dark overlay on top and bottom rows to highlight center */
-        .reel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 140px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .reel::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 140px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 5;
+        
+        @media (max-width: 768px) {
+            .reel {
+                width: 66px;
+                height: 130px;
+                border-width: 2px;
+                border-radius: 8px;
+            }
         }
 
         .reel-strip {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            transition: transform 0.1s ease-out;
+            transition: top 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .reel-item {
-            height: 140px;
+        .car-slot {
+            width: 60px;
+            height: 60px;
+            margin: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            position: relative;
-        }
-
-        .reel-item img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-        }
-
-        /* Winning line indicator - ALWAYS BRIGHT AND VISIBLE */
-        .winning-line {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 140px;
-            border-top: 4px solid #ffcc00;
-            border-bottom: 4px solid #ffcc00;
-            background: linear-gradient(to right, 
-                transparent 0%, 
-                rgba(255, 204, 0, 0.15) 50%, 
-                transparent 100%);
-            box-shadow: 
-                inset 0 0 20px rgba(255, 204, 0, 0.3),
-                0 0 20px rgba(255, 204, 0, 0.5);
-            pointer-events: none;
-            z-index: 10;
-            animation: winningLineGlow 2s ease-in-out infinite;
-        }
-
-        @keyframes winningLineGlow {
-            0%, 100% { 
-                border-color: #ffcc00;
-                box-shadow: 
-                    inset 0 0 20px rgba(255, 204, 0, 0.3),
-                    0 0 20px rgba(255, 204, 0, 0.5);
-            }
-            50% { 
-                border-color: #ffed4e;
-                box-shadow: 
-                    inset 0 0 30px rgba(255, 204, 0, 0.5),
-                    0 0 30px rgba(255, 204, 0, 0.8);
-            }
-        }
-
-        .winning-line.active {
-            border-width: 5px;
-            border-color: #00ff00;
-            background: linear-gradient(to right, 
-                transparent 0%, 
-                rgba(0, 255, 0, 0.2) 50%, 
-                transparent 100%);
-            box-shadow: 
-                inset 0 0 30px rgba(0, 255, 0, 0.5),
-                0 0 40px rgba(0, 255, 0, 0.9);
-            animation: winningLinePulse 0.5s ease-in-out infinite;
-        }
-
-        @keyframes winningLinePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .handle-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .pull-handle {
-            background: linear-gradient(145deg, #ff0000, #cc0000);
-            border: none;
-            border-radius: 20px;
-            padding: 20px 60px;
-            font-family: 'Bebas Neue', cursive;
-            font-size: 2rem;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            cursor: pointer;
-            box-shadow: 
-                0 8px 0 #880000,
-                0 12px 20px rgba(0, 0, 0, 0.5),
-                0 0 20px rgba(255, 0, 0, 0.5);
-            transition: all 0.1s ease;
-            position: relative;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.2s;
         }
         
         @media (max-width: 768px) {
-            .pull-handle {
-                padding: 18px 50px;
-                font-size: 1.6rem;
+            .car-slot {
+                width: 100px;
+                height: 100px;
+                margin: 15px -17px;
             }
         }
 
-        .pull-handle::before {
-            content: '🎰';
-            position: absolute;
-            left: 20px;
-            font-size: 1.5rem;
+        .car-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.3));
         }
 
-        .pull-handle:hover {
+        .winning-line {
+            position: absolute;
+            left: -10px;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 204, 0, 0.3) 10%, 
+                rgba(255, 204, 0, 0.5) 50%, 
+                rgba(255, 204, 0, 0.3) 90%, 
+                transparent);
+            pointer-events: none;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .winning-line::before,
+        .winning-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: #ffcc00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
+        }
+
+        .winning-line::before {
+            left: -6px;
+        }
+
+        .winning-line::after {
+            right: -6px;
+        }
+
+        .winning-line.active {
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 204, 0, 0.6) 10%, 
+                rgba(255, 204, 0, 0.9) 50%, 
+                rgba(255, 204, 0, 0.6) 90%, 
+                transparent);
+            height: 6px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+            animation: lineGlow 1s ease-in-out infinite;
+        }
+
+        @keyframes lineGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                gap: 12px;
+                margin-top: 20px;
+            }
+        }
+
+        .spin-button {
+            background: linear-gradient(145deg, #ff6600, #ff3300);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            text-transform: uppercase;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 0 #aa2200,
+                0 12px 20px rgba(0, 0, 0, 0.5),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.1s;
+            position: relative;
+            letter-spacing: 0.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .spin-button {
+                padding: 18px 30px;
+                font-size: 1.3rem;
+                min-height: 60px;
+            }
+        }
+
+        .spin-button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 
-                0 10px 0 #880000,
+                0 10px 0 #aa2200,
                 0 14px 25px rgba(0, 0, 0, 0.6),
-                0 0 30px rgba(255, 0, 0, 0.7);
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
         }
 
-        .pull-handle:active {
+        .spin-button:active:not(:disabled) {
             transform: translateY(4px);
             box-shadow: 
-                0 4px 0 #880000,
-                0 6px 15px rgba(0, 0, 0, 0.5),
-                0 0 15px rgba(255, 0, 0, 0.4);
+                0 4px 0 #aa2200,
+                0 6px 10px rgba(0, 0, 0, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.2);
         }
 
-        .pull-handle:disabled {
-            background: #666;
+        .spin-button:disabled {
+            background: linear-gradient(145deg, #555, #444);
+            box-shadow: 
+                0 4px 0 #222,
+                0 6px 10px rgba(0, 0, 0, 0.3);
             cursor: not-allowed;
-            box-shadow: 0 4px 0 #444;
-            transform: none;
+            opacity: 0.6;
         }
 
         .result-display {
-            min-height: 100px;
-            margin: 20px 0;
+            min-height: 120px;
             padding: 20px;
             background: rgba(0, 0, 0, 0.6);
             border-radius: 15px;
             border: 2px solid #444;
             text-align: center;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .result-display {
+                min-height: 100px;
+                padding: 15px 10px;
+                margin-top: 15px;
+            }
         }
 
         .result-message {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px currentColor;
+            animation: resultPulse 0.5s ease-out;
+        }
+        
+        @media (max-width: 768px) {
+            .result-message {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+        }
+
+        @keyframes resultPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .result-message.win {
             color: #00ff00;
-            text-shadow: 0 0 20px #00ff00;
-            animation: winPulse 0.5s ease-in-out infinite;
-        }
-
-        @keyframes winPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            text-shadow: 0 0 30px #00ff00;
         }
 
         .result-message.close {
             color: #ffaa00;
+            text-shadow: 0 0 20px #ffaa00;
         }
 
-        .tier-badge {
+        .win-code {
             display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            margin: 10px 0;
-            letter-spacing: 0.1em;
-        }
-
-        .tier-legendary {
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #000;
-            box-shadow: 0 0 20px #ffd700;
-        }
-
-        .tier-epic {
-            background: linear-gradient(135deg, #9945ff, #b565ff);
-            color: #fff;
-            box-shadow: 0 0 20px #9945ff;
-        }
-
-        .tier-rare {
-            background: linear-gradient(135deg, #0066ff, #3399ff);
-            color: #fff;
-            box-shadow: 0 0 20px #0066ff;
-        }
-
-        .tier-common {
-            background: linear-gradient(135deg, #00cc00, #33ff33);
-            color: #000;
-            box-shadow: 0 0 20px #00cc00;
-        }
-
-        .winner-code {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            border: 3px solid #ffcc00;
-            margin: 15px 0;
-        }
-
-        .code-text {
             font-family: 'Courier New', monospace;
             font-size: 1.5rem;
             font-weight: 900;
             color: #ffcc00;
-            letter-spacing: 0.2em;
-            margin-bottom: 15px;
-        }
-
-        .code-cars {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .code-car {
-            width: 60px;
-            height: 60px;
-            border: 2px solid #666;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
             border-radius: 10px;
-            padding: 5px;
-            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid #ffcc00;
+            box-shadow: 
+                0 0 20px rgba(255, 204, 0, 0.5),
+                inset 0 0 20px rgba(255, 204, 0, 0.1);
+            letter-spacing: 0.15em;
+            margin: 15px 0;
+            animation: codeReveal 0.5s ease-out;
+        }
+        
+        @media (max-width: 768px) {
+            .win-code {
+                font-size: 1.1rem;
+                padding: 12px 20px;
+                letter-spacing: 0.1em;
+                margin: 10px 0;
+            }
         }
 
-        .code-car img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        @keyframes codeReveal {
+            0% { transform: rotateX(90deg); opacity: 0; }
+            100% { transform: rotateX(0deg); opacity: 1; }
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 10px 0;
+        }
+
+        .tier-legendary {
+            background: linear-gradient(135deg, #ff00ff, #ff0099);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+        }
+
+        .tier-epic {
+            background: linear-gradient(135deg, #9933ff, #6600cc);
+            color: white;
+            box-shadow: 0 0 20px rgba(153, 51, 255, 0.6);
+        }
+
+        .tier-rare {
+            background: linear-gradient(135deg, #0099ff, #0066cc);
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
+        }
+
+        .tier-common {
+            background: linear-gradient(135deg, #888, #555);
+            color: white;
+            box-shadow: 0 0 15px rgba(136, 136, 136, 0.4);
         }
 
         .nudge-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .nudge-controls {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+                margin: 12px 0;
+            }
         }
 
         .nudge-btn {
-            background: linear-gradient(145deg, #ffaa00, #ff8800);
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
             border: none;
-            border-radius: 10px;
-            padding: 12px 25px;
+            padding: 12px 8px;
+            font-size: 0.8rem;
             font-family: 'Orbitron', monospace;
-            font-size: 1rem;
             font-weight: 700;
-            color: #fff;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 0 #cc6600, 0 6px 15px rgba(0, 0, 0, 0.4);
-            transition: all 0.1s ease;
-            text-transform: uppercase;
+            box-shadow: 0 4px 0 #2563ab, 0 6px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .nudge-btn {
+                padding: 10px 4px;
+                font-size: 0.65rem;
+                min-height: 50px;
+                border-radius: 6px;
+            }
         }
 
-        .nudge-btn:hover {
+        .nudge-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 0 #cc6600, 0 8px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 0 #2563ab, 0 8px 12px rgba(0, 0, 0, 0.4);
         }
 
-        .nudge-btn:active {
+        .nudge-btn:active:not(:disabled) {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #cc6600, 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 0 #2563ab, 0 3px 5px rgba(0, 0, 0, 0.2);
         }
 
         .nudge-btn:disabled {
-            background: #666;
+            background: linear-gradient(145deg, #555, #444);
+            box-shadow: 0 2px 0 #222;
             cursor: not-allowed;
-            box-shadow: 0 2px 0 #444;
+            opacity: 0.4;
         }
 
         .action-buttons {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+            gap: 10px;
             margin-top: 20px;
         }
+        
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
 
-        .action-btn {
-            background: linear-gradient(145deg, #333, #222);
-            border: 2px solid #ffcc00;
-            border-radius: 10px;
-            padding: 12px 25px;
+        .secondary-btn {
+            flex: 1;
+            background: linear-gradient(145deg, #555, #333);
+            color: white;
+            border: 2px solid #666;
+            padding: 15px 20px;
+            font-size: 1rem;
             font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
             font-weight: 700;
-            color: #ffcc00;
-            cursor: pointer;
-            transition: all 0.2s ease;
             text-transform: uppercase;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.05em;
+        }
+        
+        @media (max-width: 768px) {
+            .secondary-btn {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+                min-height: 50px;
+            }
         }
 
-        .action-btn:hover {
-            background: linear-gradient(145deg, #444, #333);
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+        .secondary-btn:hover {
+            background: linear-gradient(145deg, #666, #444);
+            border-color: #888;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
+        .secondary-btn:active {
+            transform: translateY(0);
+        }
+
+        .share-btn {
+            background: linear-gradient(145deg, #1da1f2, #0d8bd9);
+            border-color: #1da1f2;
+        }
+
+        .share-btn:hover {
+            background: linear-gradient(145deg, #3db3f5, #1da1f2);
+            border-color: #3db3f5;
+        }
+
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            overflow-y: auto;
             padding: 20px;
         }
 
         .modal.active {
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
             background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-            border: 5px solid #ffcc00;
+            border: 3px solid #ffcc00;
             border-radius: 20px;
-            padding: 40px;
+            padding: 30px;
             max-width: 600px;
             width: 100%;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 0 40px rgba(255, 204, 0, 0.5);
+            position: relative;
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 20px;
+                max-height: 90vh;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff3300;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-weight: 900;
+        }
+        
+        @media (max-width: 768px) {
+            .close-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.3rem;
+            }
+        }
+
+        .close-btn:hover {
+            background: #ff5533;
+            transform: rotate(90deg);
         }
 
         .modal-title {
-            font-family: 'Racing Sans One', cursive;
             font-size: 2rem;
             color: #ffcc00;
             text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px #ffcc00;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ffcc00;
         }
-
-        .close-modal {
-            background: #ff0000;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
-            font-family: 'Orbitron', monospace;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .win-collection {
-            display: grid;
-            gap: 20px;
+        
+        @media (max-width: 768px) {
+            .modal-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
         }
 
         .win-card {
@@ -623,6 +711,14 @@
             border: 2px solid #444;
             border-radius: 15px;
             padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .win-card {
+                padding: 15px;
+                margin-bottom: 12px;
+            }
         }
 
         .win-card-header {
@@ -632,37 +728,152 @@
             margin-bottom: 15px;
         }
 
+        .code-cars {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .code-cars {
+                gap: 8px;
+            }
+        }
+
+        .code-car {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .code-car {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .code-car img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #999;
-            font-size: 1.2rem;
         }
 
+        .how-to-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        
         @media (max-width: 768px) {
-            .reels-container {
-                gap: 5px;
+            .how-to-section {
+                margin-bottom: 20px;
+                padding: 15px;
             }
-            
-            .reel {
-                height: 350px;
+        }
+
+        .how-to-section h3 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .how-to-section h3 {
+                font-size: 1.1rem;
+                margin-bottom: 12px;
             }
-            
-            .reel-item {
-                height: 116.67px;
+        }
+
+        .how-to-section p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .how-to-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .how-to-section li {
+            color: #ccc;
+            line-height: 1.8;
+            padding-left: 25px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .how-to-section li::before {
+            content: '🏎️';
+            position: absolute;
+            left: 0;
+        }
+
+        .win-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .win-examples {
+                grid-template-columns: 1fr;
+                gap: 12px;
             }
-            
-            .winning-line {
-                height: 116.67px;
+        }
+
+        .win-example {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .win-example {
+                padding: 12px;
             }
-            
-            .pull-handle {
-                padding: 15px 40px;
-                font-size: 1.5rem;
-            }
-            
-            .title {
-                font-size: 2rem;
+        }
+
+        .win-example-cars {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .win-example-car {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        @media (max-width: 768px) {
+            .win-example-car {
+                width: 28px;
+                height: 28px;
             }
         }
     </style>
@@ -670,8 +881,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">GARAGE SLOTS</h1>
-            <p class="subtitle">Carcophony</p>
+            <h1 class="title">🎰 CARCOPHONY GARAGE SLOTS 🎰</h1>
         </div>
 
         <div class="slot-machine">
@@ -682,7 +892,7 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">Nudges</div>
-                    <div class="info-value" id="nudgeCount">0</div>
+                    <div class="info-value" id="nudgeCount">10</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Wins</div>
@@ -690,839 +900,25 @@
                 </div>
             </div>
 
-            <div class="reels-container" id="reelsContainer">
-                <div class="winning-line"></div>
-                <!-- Reels will be generated here -->
-            </div>
-
-            <div class="handle-container">
-                <button class="pull-handle" id="pullHandle">PULL</button>
-            </div>
-
-            <div class="result-display" id="resultDisplay">
-                <p style="color: #999;">Pull the handle to spin!</p>
-            </div>
-
-            <div class="action-buttons">
-                <button class="action-btn" id="howToWinBtn">ℹ️ How to Win</button>
-                <button class="action-btn" id="viewWinsBtn">🏆 My Wins</button>
-                <button class="action-btn" id="shareBtn" style="display: none;">📱 Share Win</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- My Wins Modal -->
-    <div class="modal" id="winsModal">
-        <div class="modal-content">
-            <h2 class="modal-title">🏆 MY WINS 🏆</h2>
-            <div class="win-collection" id="winCollection"></div>
-            <button class="close-modal" id="closeModal">CLOSE</button>
-        </div>
-    </div>
-
-    <!-- How to Win Modal -->
-    <div class="modal" id="howToWinModal">
-        <div class="modal-content">
-            <h2 class="modal-title">ℹ️ HOW TO WIN ℹ️</h2>
-            <div style="color: #fff; line-height: 1.8;">
-                <p style="font-size: 1.1rem; margin-bottom: 20px; color: #ffcc00;">
-                    Match 5 cars on the CENTER LINE to win!
-                </p>
-                
-                <div style="background: rgba(0,200,0,0.1); padding: 15px; border-radius: 10px; border: 2px solid #00cc00; margin-bottom: 20px;">
-                    <h3 style="color: #00ff00; margin-bottom: 10px; font-size: 1rem;">🎯 GENEROUS NUDGE SYSTEM:</h3>
-                    <p>• You start with <strong>10 NUDGES</strong></p>
-                    <p>• Maximum bank: <strong>20 NUDGES</strong></p>
-                    <p>• Use them strategically to create wins!</p>
-                    <p>• <strong>Nudge the same reel multiple times to hunt for cars!</strong></p>
-                    <p>• <strong>3 matching cars = +3 nudges!</strong></p>
-                    <p>• <strong>4 matching cars = +5 nudges!</strong></p>
-                    <p>• Winning refreshes nudges based on tier (2-5 nudges!)</p>
-                    <p style="font-size: 0.85rem; color: #999; margin-top: 8px;">💡 TIP: Your nudge counter glows green when maxed out!</p>
-                </div>
-                
-                <div style="background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; margin-bottom: 25px; border: 2px solid #444;">
-                    <h3 style="color: #ffcc00; margin-bottom: 15px; font-size: 1.2rem;">🏆 WINNING COMBINATIONS & VALUES:</h3>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div class="tier-badge tier-legendary" style="margin-bottom: 10px;">LEGENDARY ⭐⭐⭐⭐</div>
-                        <p style="margin-left: 20px;">🏆 All 5 F40s (different colors) <strong>+5 Nudges + CODE!</strong></p>
-                        <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Ultra Rare - Premium game access!</p>
-                        <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Cars: 1, 8, 15, 17, 24</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div class="tier-badge tier-epic" style="margin-bottom: 10px;">EPIC ⭐⭐⭐</div>
-                        <p style="margin-left: 20px;">🥈 All 5 F1s / Miuras / 959s <strong>+4 Nudges + CODE!</strong></p>
-                        <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Very Rare - Tier 3 game access</p>
-                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">F1s: 2, 9, 11, 18, 25 | Miuras: 4, 6, 13, 20, 22 | 959s: 5, 7, 14, 16, 23</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div class="tier-badge tier-rare" style="margin-bottom: 10px;">RARE ⭐⭐</div>
-                        <p style="margin-left: 20px;">🥉 All 5 RED / BLUE / GREEN cars <strong>+3 Nudges + CODE!</strong></p>
-                        <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Uncommon - Tier 2 game access</p>
-                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">Red: 2,6,15,19,23 | Blue: 5,9,13,17,21 | Green: 1,10,14,18,22</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div class="tier-badge tier-common" style="margin-bottom: 10px;">COMMON ⭐</div>
-                        <p style="margin-left: 20px;">All 5 YELLOW / PINK cars <strong>+2 Nudges + CODE!</strong></p>
-                        <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Common - Tier 1 game access</p>
-                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">Yellow: 3,7,11,20,24 | Pink: 4,8,12,16,25</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,170,0,0.15); border-radius: 10px; border: 2px solid #ffaa00;">
-                        <p style="color: #ffaa00; font-weight: 700; margin-bottom: 8px;">💨 SMALL WIN (Nudges Only):</p>
-                        <p style="margin-left: 20px; font-size: 0.95rem;">All 5 same color BUT with duplicates = <strong>+4 Nudges!</strong></p>
-                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">Example: 3x Blue #9 + 2x Blue #5 = Small Win</p>
-                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">No code awarded - nudge for all different to get a code!</p>
+            <div class="reels-container">
+                <div class="reel-wrapper">
+                    <div class="reel" id="reel0">
+                        <div class="reel-strip" id="strip0"></div>
                     </div>
                 </div>
-                
-                <div style="background: rgba(255,170,0,0.1); padding: 15px; border-radius: 10px; border: 2px solid #ffaa00;">
-                    <h3 style="color: #ffaa00; margin-bottom: 10px; font-size: 1rem;">💨 PARTIAL MATCHES:</h3>
-                    <p>• 3 matching cars = +1 Nudge</p>
-                    <p>• 4 matching cars = +2 Nudges</p>
-                    <p style="font-size: 0.9rem; color: #999; margin-top: 10px;">
-                        Keep spinning and use nudges wisely to create wins!
-                    </p>
+                <div class="reel-wrapper">
+                    <div class="reel" id="reel1">
+                        <div class="reel-strip" id="strip1"></div>
+                    </div>
                 </div>
-                
-                <div style="margin-top: 20px; padding: 15px; background: rgba(255,0,0,0.1); border-radius: 10px; border: 2px solid #ff0000;">
-                    <h3 style="color: #ff0000; margin-bottom: 10px; font-size: 1rem;">⚠️ IMPORTANT:</h3>
-                    <p>• <strong>PERFECT WIN:</strong> 5 DIFFERENT car numbers = Winner Code!</p>
-                    <p>• <strong>SMALL WIN:</strong> Same color but duplicates = Nudges only</p>
-                    <p>• For color wins: All different models required for code</p>
-                    <p>• For model wins: All different colors required for code</p>
-                    <p style="margin-top: 10px; font-size: 0.9rem; color: #ffaa00;">💡 Use multiple nudges on same reel to hunt for the missing car!</p>
+                <div class="reel-wrapper">
+                    <div class="reel" id="reel2">
+                        <div class="reel-strip" id="strip2"></div>
+                    </div>
                 </div>
-                
-                <div style="margin-top: 20px; padding: 15px; background: rgba(100,200,255,0.1); border-radius: 10px; border: 2px solid #66ccff;">
-                    <h3 style="color: #66ccff; margin-bottom: 10px; font-size: 1rem;">🎮 COLLECTION STRATEGY:</h3>
-                    <p style="font-size: 0.95rem;">Collect winner codes to unlock future games!</p>
-                    <p style="font-size: 0.9rem; color: #999;">• Common codes (Yellow/Pink) - Easy to get, Tier 1 access</p>
-                    <p style="font-size: 0.9rem; color: #999;">• Rare codes (R/B/G) - Harder to get, Tier 2 access</p>
-                    <p style="font-size: 0.9rem; color: #999;">• Epic codes (F1/Miura/959) - Very rare, Tier 3 access</p>
-                    <p style="font-size: 0.9rem; color: #999;">• Legendary codes (F40) - Ultra rare, Premium access</p>
+                <div class="reel-wrapper">
+                    <div class="reel" id="reel3">
+                        <div class="reel-strip" id="strip3"></div>
+                    </div>
                 </div>
-            </div>
-            <button class="close-modal" id="closeHowToWin">CLOSE</button>
-        </div>
-    </div>
-
-    <script>
-        // Car data - based on the lottery game grid
-        const CARS = {
-            // F40s
-            1: { model: 'F40', color: 'Green' },
-            8: { model: 'F40', color: 'Pink' },
-            15: { model: 'F40', color: 'Red' },
-            17: { model: 'F40', color: 'Blue' },
-            24: { model: 'F40', color: 'Yellow' },
-            
-            // F1s
-            2: { model: 'F1', color: 'Red' },
-            9: { model: 'F1', color: 'Blue' },
-            11: { model: 'F1', color: 'Yellow' },
-            18: { model: 'F1', color: 'Green' },
-            25: { model: 'F1', color: 'Pink' },
-            
-            // Teslas
-            3: { model: 'Tesla', color: 'Yellow' },
-            10: { model: 'Tesla', color: 'Green' },
-            12: { model: 'Tesla', color: 'Pink' },
-            19: { model: 'Tesla', color: 'Red' },
-            21: { model: 'Tesla', color: 'Blue' },
-            
-            // Miuras
-            4: { model: 'Miura', color: 'Pink' },
-            6: { model: 'Miura', color: 'Red' },
-            13: { model: 'Miura', color: 'Blue' },
-            20: { model: 'Miura', color: 'Yellow' },
-            22: { model: 'Miura', color: 'Green' },
-            
-            // 959s
-            5: { model: '959', color: 'Blue' },
-            7: { model: '959', color: 'Yellow' },
-            14: { model: '959', color: 'Green' },
-            16: { model: '959', color: 'Pink' },
-            23: { model: '959', color: 'Red' }
-        };
-
-        // Winning lines - same as lottery
-        const WINNING_LINES = {
-            color: {
-                'Green': [1, 10, 14, 18, 22],
-                'Red': [2, 6, 15, 19, 23],
-                'Yellow': [3, 7, 11, 20, 24],
-                'Pink': [4, 8, 12, 16, 25],
-                'Blue': [5, 9, 13, 17, 21]
-            },
-            model: {
-                'F40': [1, 8, 15, 17, 24],
-                'F1': [2, 9, 11, 18, 25],
-                'Tesla': [3, 10, 12, 19, 21],
-                'Miura': [4, 6, 13, 20, 22],
-                '959': [5, 7, 14, 16, 23]
-            }
-        };
-
-        // Tier configuration with COLLECTION VALUES
-        const TIERS = {
-            'F40': { name: 'Legendary', class: 'tier-legendary', rarity: 1, value: '⭐⭐⭐⭐', description: 'Ultra Rare!', nudgeBonus: 5 },
-            'F1': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 4 },
-            'Miura': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 4 },
-            '959': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 4 },
-            'Yellow': { name: 'Common', class: 'tier-common', rarity: 4, value: '⭐', description: 'Common Find', nudgeBonus: 2 },
-            'Pink': { name: 'Common', class: 'tier-common', rarity: 4, value: '⭐', description: 'Common Find', nudgeBonus: 2 },
-            'Green': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 3 },
-            'Red': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 3 },
-            'Blue': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 3 }
-        };
-
-        // Game state
-        let spinning = false;
-        let nudgesAvailable = 10; // START WITH 10 NUDGES!
-        const MAX_NUDGES = 20; // CAP AT 20 NUDGES
-        let totalSpins = 0;
-        let totalWins = 0;
-        let currentResult = null;
-        let reelPositions = [0, 0, 0, 0, 0]; // Track current position of each reel
-        let nudgedReels = [false, false, false, false, false]; // Track which reels have been nudged this result
-
-        // GitHub images path
-        const IMAGE_BASE = 'https://raw.githubusercontent.com/Carcophony/car-lottery/main/images/';
-
-        // Initialize game
-        function init() {
-            createReels();
-            loadGameState();
-            updateDisplay();
-            attachEventListeners();
-        }
-
-        function createReels() {
-            const container = document.getElementById('reelsContainer');
-            const winningLine = container.querySelector('.winning-line');
-            
-            for (let i = 0; i < 5; i++) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'reel-wrapper';
-                
-                const reel = document.createElement('div');
-                reel.className = 'reel';
-                reel.id = `reel${i}`;
-                
-                const strip = document.createElement('div');
-                strip.className = 'reel-strip';
-                strip.id = `strip${i}`;
-                
-                // Create a MASSIVE strip of cars for infinite scrolling
-                // 200 cars = nearly impossible to hit limits in normal play
-                const carNumbers = Object.keys(CARS).map(Number);
-                for (let j = 0; j < 200; j++) {
-                    const carNum = carNumbers[Math.floor(Math.random() * carNumbers.length)];
-                    const item = document.createElement('div');
-                    item.className = 'reel-item';
-                    item.innerHTML = `<img src="${IMAGE_BASE}${carNum}.png" alt="Car ${carNum}">`;
-                    item.dataset.carNum = carNum;
-                    strip.appendChild(item);
-                }
-                
-                reel.appendChild(strip);
-                wrapper.appendChild(reel);
-                container.insertBefore(wrapper, winningLine);
-            }
-            
-            // Initialize reel positions to show middle row
-            for (let i = 0; i < 5; i++) {
-                reelPositions[i] = -140; // Start at position showing item index 1 in center
-                updateReelPosition(i);
-            }
-        }
-
-        function updateReelPosition(reelIndex, smooth = false) {
-            const strip = document.getElementById(`strip${reelIndex}`);
-            if (smooth) {
-                strip.style.transition = 'transform 0.3s ease-out';
-            } else {
-                strip.style.transition = 'transform 0.1s ease-out';
-            }
-            strip.style.transform = `translateY(${reelPositions[reelIndex]}px)`;
-        }
-
-        function attachEventListeners() {
-            document.getElementById('pullHandle').addEventListener('click', pullHandle);
-            document.getElementById('howToWinBtn').addEventListener('click', showHowToWin);
-            document.getElementById('viewWinsBtn').addEventListener('click', showWins);
-            document.getElementById('closeModal').addEventListener('click', closeModal);
-            document.getElementById('closeHowToWin').addEventListener('click', closeHowToWinModal);
-            document.getElementById('shareBtn').addEventListener('click', shareWin);
-        }
-
-        async function pullHandle() {
-            if (spinning) return;
-            
-            spinning = true;
-            totalSpins++;
-            currentResult = null;
-            // DON'T reset nudges - keep the bank!
-            nudgedReels = [false, false, false, false, false]; // Reset nudge TRACKING (not restriction!) per spin
-            
-            const button = document.getElementById('pullHandle');
-            button.disabled = true;
-            button.textContent = 'SPINNING...';
-            
-            document.querySelector('.winning-line').classList.remove('active');
-            document.getElementById('resultDisplay').innerHTML = '<p style="color: #999;">🎰 Spinning...</p>';
-            document.getElementById('shareBtn').style.display = 'none';
-            
-            // Animate spin
-            await spinReels();
-            
-            // Check result
-            const result = checkWin();
-            displayResult(result);
-            
-            button.disabled = false;
-            button.textContent = 'PULL';
-            spinning = false;
-            
-            updateDisplay();
-            saveGameState();
-        }
-
-        function spinReels() {
-            return new Promise(resolve => {
-                const finalPositions = [];
-                
-                // Generate final random positions for each reel
-                for (let i = 0; i < 5; i++) {
-                    const carNumbers = Object.keys(CARS).map(Number);
-                    const randomIndex = Math.floor(Math.random() * 15); // Use middle section of strip
-                    finalPositions.push(randomIndex);
-                }
-                
-                // Animate each reel with staggered timing
-                const spinDurations = [1000, 1200, 1400, 1600, 1800];
-                
-                finalPositions.forEach((targetIndex, i) => {
-                    setTimeout(() => {
-                        const strip = document.getElementById(`strip${i}`);
-                        
-                        // Spin animation: go down many items then settle
-                        const spinAmount = 2000 + (Math.random() * 500);
-                        strip.style.transition = `transform ${spinDurations[i]}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-                        strip.style.transform = `translateY(-${spinAmount}px)`;
-                        
-                        setTimeout(() => {
-                            // Snap to final position
-                            reelPositions[i] = -targetIndex * 140;
-                            strip.style.transition = 'transform 0.3s ease-out';
-                            strip.style.transform = `translateY(${reelPositions[i]}px)`;
-                            
-                            if (i === 4) {
-                                setTimeout(resolve, 300);
-                            }
-                        }, spinDurations[i]);
-                    }, i * 100);
-                });
-            });
-        }
-
-        function getCurrentCars() {
-            const cars = [];
-            for (let i = 0; i < 5; i++) {
-                const strip = document.getElementById(`strip${i}`);
-                const items = strip.querySelectorAll('.reel-item');
-                
-                // The reel window is 420px tall, showing 3 items (each 140px)
-                // Center is at 210px from top of window
-                // When translateY is -140, strip is shifted up 140px
-                // So window sees strip pixels 140-560
-                // Center of window (210px from window top) = 140 + 210 = 350px from strip top
-                // 350 / 140 = 2.5, so we're showing middle of item index 2
-                // But we want the item CENTERED, so: Math.floor(Math.abs(position)/140) + 1
-                
-                const centerIndex = Math.floor(Math.abs(reelPositions[i]) / 140) + 1;
-                
-                // Safety check
-                if (centerIndex >= 0 && centerIndex < items.length) {
-                    const carNum = parseInt(items[centerIndex].dataset.carNum);
-                    cars.push(carNum);
-                } else {
-                    // Fallback to a safe index
-                    cars.push(parseInt(items[1].dataset.carNum));
-                }
-            }
-            return cars;
-        }
-
-        function checkWin() {
-            const cars = getCurrentCars();
-            const carData = cars.map(num => CARS[num]);
-            
-            // Check for PERFECT same color (all different models) - BIG WIN with code
-            const allSameColor = carData.every(c => c.color === carData[0].color);
-            if (allSameColor) {
-                const models = new Set(carData.map(c => c.model));
-                if (models.size === 5) { // All different models - PERFECT!
-                    return {
-                        type: 'color_perfect',
-                        value: carData[0].color,
-                        cars: cars,
-                        tier: TIERS[carData[0].color]
-                    };
-                } else {
-                    // All same color but has duplicates - SMALL WIN (nudges only, no code)
-                    return {
-                        type: 'color_small',
-                        value: carData[0].color,
-                        cars: cars,
-                        duplicates: 5 - models.size
-                    };
-                }
-            }
-            
-            // Check for PERFECT same model (all different colors) - BIG WIN with code
-            const allSameModel = carData.every(c => c.model === carData[0].model);
-            if (allSameModel) {
-                const colors = new Set(carData.map(c => c.color));
-                if (colors.size === 5) { // All different colors - PERFECT!
-                    return {
-                        type: 'model_perfect',
-                        value: carData[0].model,
-                        cars: cars,
-                        tier: TIERS[carData[0].model]
-                    };
-                } else {
-                    // All same model but has duplicates - SMALL WIN (nudges only, no code)
-                    return {
-                        type: 'model_small',
-                        value: carData[0].model,
-                        cars: cars,
-                        duplicates: 5 - colors.size
-                    };
-                }
-            }
-            
-            // Check for partial matches (for nudges/small wins)
-            const colorCounts = {};
-            const modelCounts = {};
-            carData.forEach(c => {
-                colorCounts[c.color] = (colorCounts[c.color] || 0) + 1;
-                modelCounts[c.model] = (modelCounts[c.model] || 0) + 1;
-            });
-            
-            const maxColorMatch = Math.max(...Object.values(colorCounts));
-            const maxModelMatch = Math.max(...Object.values(modelCounts));
-            const bestMatch = Math.max(maxColorMatch, maxModelMatch);
-            
-            if (bestMatch >= 3) {
-                return {
-                    type: 'partial',
-                    matches: bestMatch,
-                    cars: cars
-                };
-            }
-            
-            return { type: 'loss', cars: cars };
-        }
-
-        function displayResult(result) {
-            currentResult = result;
-            const display = document.getElementById('resultDisplay');
-            
-            // PERFECT WINS - All different, get a code!
-            if (result.type === 'color_perfect' || result.type === 'model_perfect') {
-                // BIG WIN WITH CODE!
-                totalWins++;
-                document.querySelector('.winning-line').classList.add('active');
-                
-                const winType = result.type === 'color_perfect' ? `All ${result.value} Cars` : `All ${result.value}s`;
-                const code = generateWinCode(result);
-                
-                // Add nudge bonus based on tier!
-                nudgesAvailable = Math.min(nudgesAvailable + result.tier.nudgeBonus, MAX_NUDGES);
-                
-                display.innerHTML = `
-                    <div class="result-message win">🎉 PERFECT WIN! 🎉</div>
-                    <div class="tier-badge ${result.tier.class}">${result.tier.name}</div>
-                    <p style="color: #fff; margin: 10px 0;">${winType} - All Different!</p>
-                    <p style="color: #ffaa00; font-size: 1rem;">${result.tier.value} ${result.tier.description}</p>
-                    <p style="color: #00ff00; font-size: 1rem; margin-top: 10px;">+${result.tier.nudgeBonus} Nudge${result.tier.nudgeBonus > 1 ? 's' : ''} Bonus!</p>
-                    <div class="winner-code">
-                        <div class="code-text">${code.text}</div>
-                        <div class="code-cars">
-                            ${result.cars.map(num => `
-                                <div class="code-car">
-                                    <img src="${IMAGE_BASE}${num}.png" alt="Car ${num}">
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    <p style="color: #ffcc00; margin-top: 15px;">📸 Screenshot this code!</p>
-                    <p style="color: #999; font-size: 0.9rem;">Collect codes to unlock future games!</p>
-                `;
-                
-                document.getElementById('shareBtn').style.display = 'block';
-                
-                // Save the win
-                saveWin(code, result);
-                
-            } else if (result.type === 'color_small' || result.type === 'model_small') {
-                // SMALL WIN - All same color/model but has duplicates - NUDGES ONLY!
-                document.querySelector('.winning-line').classList.add('active');
-                
-                const winType = result.type === 'color_small' ? `All ${result.value} Cars!` : `All ${result.value}s!`;
-                const nudgesEarned = 4; // Small win = +4 nudges
-                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES);
-                
-                display.innerHTML = `
-                    <div class="result-message" style="color: #ffaa00; text-shadow: 0 0 15px #ffaa00;">💨 SMALL WIN! 💨</div>
-                    <p style="color: #fff; margin: 10px 0;">${winType}</p>
-                    <p style="color: #ff9900; font-size: 0.95rem;">Line has ${result.duplicates} duplicate${result.duplicates > 1 ? 's' : ''}</p>
-                    <p style="color: #00ff00; font-size: 1.3rem; margin-top: 10px;">+${nudgesEarned} Nudges Earned!</p>
-                    <p style="color: #999; font-size: 0.9rem; margin-top: 10px;">Get all different for a winner code!</p>
-                `;
-                
-            } else if (result.type === 'partial' && result.matches >= 3) {
-                // Partial win - award GENEROUS nudges!
-                const nudgesEarned = result.matches === 4 ? 5 : 3; // 4-match = +5, 3-match = +3
-                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES); // CAP AT 20!
-                
-                // Figure out what they matched and what they need
-                const cars = getCurrentCars();
-                const carData = cars.map(num => CARS[num]);
-                
-                // Check what type of partial match it is
-                const colorCounts = {};
-                const modelCounts = {};
-                carData.forEach(c => {
-                    colorCounts[c.color] = (colorCounts[c.color] || 0) + 1;
-                    modelCounts[c.model] = (modelCounts[c.model] || 0) + 1;
-                });
-                
-                let matchType = '';
-                let whatYouNeed = '';
-                
-                const maxColor = Object.keys(colorCounts).reduce((a, b) => colorCounts[a] > colorCounts[b] ? a : b);
-                const maxModel = Object.keys(modelCounts).reduce((a, b) => modelCounts[a] > modelCounts[b] ? a : b);
-                
-                if (colorCounts[maxColor] >= modelCounts[maxModel]) {
-                    matchType = `${colorCounts[maxColor]} ${maxColor} cars`;
-                    whatYouNeed = `You need 5 DIFFERENT models all in ${maxColor} to win!`;
-                } else {
-                    matchType = `${modelCounts[maxModel]} ${maxModel}s`;
-                    whatYouNeed = `You need 5 DIFFERENT colors of ${maxModel}s to win!`;
-                }
-                
-                display.innerHTML = `
-                    <div class="result-message close">💨 SO CLOSE! 💨</div>
-                    <p style="color: #fff; margin: 10px 0;">You matched ${matchType}!</p>
-                    <p style="color: #ff6600; font-size: 0.95rem; margin: 10px 0;">${whatYouNeed}</p>
-                    <p style="color: #ffaa00; font-size: 1.2rem;">+${nudgesEarned} Nudge${nudgesEarned > 1 ? 's' : ''} Earned!</p>
-                    <div class="nudge-controls">
-                        ${[0, 1, 2, 3, 4].map(i => `
-                            <button class="nudge-btn" onclick="nudgeReel(${i}, -1)" ${nudgedReels[i] ? 'disabled' : ''}>⬆️ Reel ${i + 1}</button>
-                            <button class="nudge-btn" onclick="nudgeReel(${i}, 1)" ${nudgedReels[i] ? 'disabled' : ''}>⬇️ Reel ${i + 1}</button>
-                        `).join('')}
-                    </div>
-                    <p style="color: #999; font-size: 0.9rem; margin-top: 15px;">Nudges available: ${nudgesAvailable}</p>
-                    <p style="color: #666; font-size: 0.8rem;">Each reel can only be nudged once per result</p>
-                `;
-                
-            } else {
-                // No win
-                display.innerHTML = `
-                    <div class="result-message" style="color: #999;">Not a winner</div>
-                    <p style="color: #666;">Try again!</p>
-                `;
-            }
-        }
-
-        function nudgeReel(reelIndex, direction) {
-            if (nudgesAvailable <= 0 || spinning) return; // REMOVED nudgedReels check - allows multiple nudges!
-            
-            nudgesAvailable--;
-            // DON'T mark as nudged - allow multiple nudges per reel!
-            updateDisplay(); // UPDATE IMMEDIATELY!
-            
-            // Move one car up or down
-            // Direction: positive = up (less negative), negative = down (more negative)
-            const newPosition = reelPositions[reelIndex] + (direction * 140);
-            
-            // Safety check - with 200 cars, limits are VERY generous
-            // Position -140 shows item 1 in center, -27720 shows item 198 in center
-            const maxPosition = -140;     // Most positive (item 1 centered)
-            const minPosition = -27720;   // Most negative (item 198 centered)
-            
-            if (newPosition <= maxPosition && newPosition >= minPosition) {
-                reelPositions[reelIndex] = newPosition;
-                updateReelPosition(reelIndex, true);
-            } else {
-                // Out of bounds - restore the nudge
-                // This should RARELY happen with 200 cars!
-                nudgesAvailable++;
-                updateDisplay();
-                return;
-            }
-            
-            // After nudge, check if it created a win
-            // DON'T award more nudges - just check for wins
-            setTimeout(() => {
-                const result = checkWin();
-                displayResultAfterNudge(result); // Use special function that doesn't award nudges
-                updateDisplay();
-                saveGameState();
-            }, 400);
-        }
-        
-        function displayResultAfterNudge(result) {
-            // Same as displayResult but shows remaining nudge options
-            const display = document.getElementById('resultDisplay');
-            
-            // PERFECT WINS - with codes
-            if (result.type === 'color_perfect' || result.type === 'model_perfect') {
-                // BIG WIN!
-                totalWins++;
-                document.querySelector('.winning-line').classList.add('active');
-                
-                const winType = result.type === 'color_perfect' ? `All ${result.value} Cars` : `All ${result.value}s`;
-                const code = generateWinCode(result);
-                
-                // Add nudge bonus based on tier!
-                nudgesAvailable = Math.min(nudgesAvailable + result.tier.nudgeBonus, MAX_NUDGES);
-                
-                display.innerHTML = `
-                    <div class="result-message win">🎉 PERFECT WIN! 🎉</div>
-                    <div class="tier-badge ${result.tier.class}">${result.tier.name}</div>
-                    <p style="color: #fff; margin: 10px 0;">${winType} - All Different!</p>
-                    <p style="color: #ffaa00; font-size: 1rem;">${result.tier.value} ${result.tier.description}</p>
-                    <p style="color: #00ff00; font-size: 1rem; margin-top: 10px;">+${result.tier.nudgeBonus} Nudge${result.tier.nudgeBonus > 1 ? 's' : ''} Bonus!</p>
-                    <div class="winner-code">
-                        <div class="code-text">${code.text}</div>
-                        <div class="code-cars">
-                            ${result.cars.map(num => `
-                                <div class="code-car">
-                                    <img src="${IMAGE_BASE}${num}.png" alt="Car ${num}">
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    <p style="color: #ffcc00; margin-top: 15px;">📸 Screenshot this code!</p>
-                    <p style="color: #999; font-size: 0.9rem;">Collect codes to unlock future games!</p>
-                `;
-                
-                document.getElementById('shareBtn').style.display = 'block';
-                
-                // Save the win
-                saveWin(code, result);
-                
-            } else if (result.type === 'color_small' || result.type === 'model_small') {
-                // SMALL WIN after nudge!
-                document.querySelector('.winning-line').classList.add('active');
-                
-                const winType = result.type === 'color_small' ? `All ${result.value} Cars!` : `All ${result.value}s!`;
-                const nudgesEarned = 4;
-                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES);
-                
-                display.innerHTML = `
-                    <div class="result-message" style="color: #ffaa00; text-shadow: 0 0 15px #ffaa00;">💨 SMALL WIN! 💨</div>
-                    <p style="color: #fff; margin: 10px 0;">${winType}</p>
-                    <p style="color: #ff9900; font-size: 0.95rem;">Line has ${result.duplicates} duplicate${result.duplicates > 1 ? 's' : ''}</p>
-                    <p style="color: #00ff00; font-size: 1.3rem; margin-top: 10px;">+${nudgesEarned} Nudges Earned!</p>
-                    <p style="color: #999; font-size: 0.9rem; margin-top: 10px;">Nudge for all different to get a code!</p>
-                `;
-                
-            } else if (result.type === 'partial' && result.matches >= 3) {
-                // Partial match after nudge - SHOW REMAINING NUDGE BUTTONS!
-                const cars = getCurrentCars();
-                const carData = cars.map(num => CARS[num]);
-                
-                const colorCounts = {};
-                const modelCounts = {};
-                carData.forEach(c => {
-                    colorCounts[c.color] = (colorCounts[c.color] || 0) + 1;
-                    modelCounts[c.model] = (modelCounts[c.model] || 0) + 1;
-                });
-                
-                let matchType = '';
-                let whatYouNeed = '';
-                
-                const maxColor = Object.keys(colorCounts).reduce((a, b) => colorCounts[a] > colorCounts[b] ? a : b);
-                const maxModel = Object.keys(modelCounts).reduce((a, b) => modelCounts[a] > modelCounts[b] ? a : b);
-                
-                if (colorCounts[maxColor] >= modelCounts[maxModel]) {
-                    matchType = `${colorCounts[maxColor]} ${maxColor} cars`;
-                    whatYouNeed = `You need 5 DIFFERENT models all in ${maxColor} to win!`;
-                } else {
-                    matchType = `${modelCounts[maxModel]} ${maxModel}s`;
-                    whatYouNeed = `You need 5 DIFFERENT colors of ${maxModel}s to win!`;
-                }
-                
-                // KEEP SHOWING NUDGE BUTTONS FOR UN-NUDGED REELS!
-                if (nudgesAvailable > 0) {
-                    display.innerHTML = `
-                        <div class="result-message close">💨 STILL CLOSE! 💨</div>
-                        <p style="color: #fff; margin: 10px 0;">You matched ${matchType}!</p>
-                        <p style="color: #ff6600; font-size: 0.95rem; margin: 10px 0;">${whatYouNeed}</p>
-                        <div class="nudge-controls">
-                            ${[0, 1, 2, 3, 4].map(i => `
-                                <button class="nudge-btn" onclick="nudgeReel(${i}, -1)" ${nudgedReels[i] ? 'disabled' : ''}>⬆️ Reel ${i + 1}</button>
-                                <button class="nudge-btn" onclick="nudgeReel(${i}, 1)" ${nudgedReels[i] ? 'disabled' : ''}>⬇️ Reel ${i + 1}</button>
-                            `).join('')}
-                        </div>
-                        <p style="color: #999; font-size: 0.9rem; margin-top: 15px;">Nudges available: ${nudgesAvailable}</p>
-                        <p style="color: #666; font-size: 0.8rem;">Each reel can only be nudged once per result</p>
-                    `;
-                } else {
-                    display.innerHTML = `
-                        <div class="result-message close">💨 SO CLOSE! 💨</div>
-                        <p style="color: #fff; margin: 10px 0;">You matched ${matchType}!</p>
-                        <p style="color: #ff6600; font-size: 0.95rem; margin: 10px 0;">${whatYouNeed}</p>
-                        <p style="color: #999; font-size: 0.9rem; margin-top: 15px;">Out of nudges - pull again!</p>
-                    `;
-                }
-                
-            } else {
-                // No win
-                display.innerHTML = `
-                    <div class="result-message" style="color: #999;">Not a winner</div>
-                    <p style="color: #666;">Pull the handle to try again!</p>
-                `;
-            }
-        }
-
-        function generateWinCode(result) {
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const tierPrefix = result.tier.name === 'Legendary' ? 'LEG' : 
-                              result.tier.name === 'Epic' ? 'EPC' : 'RAR';
-            
-            return {
-                text: `WIN-${tierPrefix}-${random}`,
-                timestamp: timestamp,
-                tier: result.tier.name,
-                type: result.type === 'color' ? result.value : result.value,
-                cars: result.cars
-            };
-        }
-
-        function saveWin(code, result) {
-            const wins = JSON.parse(localStorage.getItem('garageSlots_wins') || '[]');
-            wins.push({
-                code: code.text,
-                timestamp: code.timestamp,
-                tier: code.tier,
-                type: result.type === 'color' ? `All ${result.value} Cars` : `All ${result.value}s`,
-                cars: result.cars,
-                date: new Date().toLocaleDateString()
-            });
-            localStorage.setItem('garageSlots_wins', JSON.stringify(wins));
-        }
-
-        function showWins() {
-            const wins = JSON.parse(localStorage.getItem('garageSlots_wins') || '[]');
-            const container = document.getElementById('winCollection');
-            
-            if (wins.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <p>No wins yet!</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Keep spinning to collect winner codes!</p>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = wins.reverse().map(win => `
-                    <div class="win-card">
-                        <div class="win-card-header">
-                            <div>
-                                <div class="tier-badge ${TIERS[win.tier === 'Legendary' ? 'F40' : win.tier === 'Epic' ? 'F1' : 'Green'].class}">
-                                    ${win.tier}
-                                </div>
-                            </div>
-                            <div style="text-align: right; font-size: 0.8rem; color: #999;">
-                                ${win.date}
-                            </div>
-                        </div>
-                        <div style="margin: 15px 0;">
-                            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 900; color: #ffcc00; margin-bottom: 10px;">
-                                ${win.code}
-                            </div>
-                            <div style="color: #fff; margin-bottom: 10px;">${win.type}</div>
-                            <div class="code-cars">
-                                ${win.cars.map(num => `
-                                    <div class="code-car">
-                                        <img src="${IMAGE_BASE}${num}.png" alt="Car ${num}">
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            
-            document.getElementById('winsModal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('winsModal').classList.remove('active');
-        }
-
-        function showHowToWin() {
-            document.getElementById('howToWinModal').classList.add('active');
-        }
-
-        function closeHowToWinModal() {
-            document.getElementById('howToWinModal').classList.remove('active');
-        }
-
-        function shareWin() {
-            if (!currentResult || (currentResult.type !== 'color_perfect' && currentResult.type !== 'model_perfect')) return;
-            
-            const winType = currentResult.type === 'color_perfect' ? `All ${currentResult.value} Cars` : `All ${currentResult.value}s`;
-            const text = `🎰 I just won ${winType} on Carcophony Garage Slots! ${currentResult.tier.name} tier! 🏆\n\nPlay now: https://carcophony.github.io/car-lottery/garage-slots.html`;
-            
-            // Use X/Twitter intent URL
-            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-            window.open(twitterUrl, '_blank', 'width=600,height=400');
-        }
-
-        function updateDisplay() {
-            document.getElementById('spinCount').textContent = totalSpins;
-            const nudgeDisplay = document.getElementById('nudgeCount');
-            nudgeDisplay.textContent = nudgesAvailable;
-            // Visual feedback when at max nudges
-            if (nudgesAvailable >= MAX_NUDGES) {
-                nudgeDisplay.style.color = '#00ff00';
-                nudgeDisplay.style.textShadow = '0 0 20px #00ff00';
-            } else {
-                nudgeDisplay.style.color = '#ffcc00';
-                nudgeDisplay.style.textShadow = '0 0 10px #ffcc00';
-            }
-            document.getElementById('winCount').textContent = totalWins;
-        }
-
-        function saveGameState() {
-            const state = {
-                totalSpins,
-                nudgesAvailable,
-                totalWins
-            };
-            localStorage.setItem('garageSlots_state', JSON.stringify(state));
-        }
-
-        function loadGameState() {
-            const state = JSON.parse(localStorage.getItem('garageSlots_state') || '{}');
-            totalSpins = state.totalSpins || 0;
-            nudgesAvailable = state.nudgesAvailable !== undefined ? state.nudgesAvailable : 10; // Default to 10, not 0!
-            totalWins = state.totalWins || 0;
-        }
-
-        // Initialize on load
-        init();
-    </script>
-</body>
-</html>
+                <div class="reel-wrapper">
