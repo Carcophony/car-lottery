@@ -172,6 +172,31 @@
                 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
+        /* Dark overlay on top and bottom rows to highlight center */
+        .reel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 140px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .reel::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 140px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
         .reel-strip {
             position: absolute;
             width: 100%;
@@ -194,7 +219,7 @@
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
         }
 
-        /* Winning line indicator */
+        /* Winning line indicator - ALWAYS BRIGHT AND VISIBLE */
         .winning-line {
             position: absolute;
             left: 0;
@@ -202,23 +227,51 @@
             top: 50%;
             transform: translateY(-50%);
             height: 140px;
-            border-top: 3px solid rgba(255, 204, 0, 0.3);
-            border-bottom: 3px solid rgba(255, 204, 0, 0.3);
+            border-top: 4px solid #ffcc00;
+            border-bottom: 4px solid #ffcc00;
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                rgba(255, 204, 0, 0.15) 50%, 
+                transparent 100%);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 204, 0, 0.3),
+                0 0 20px rgba(255, 204, 0, 0.5);
             pointer-events: none;
             z-index: 10;
+            animation: winningLineGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes winningLineGlow {
+            0%, 100% { 
+                border-color: #ffcc00;
+                box-shadow: 
+                    inset 0 0 20px rgba(255, 204, 0, 0.3),
+                    0 0 20px rgba(255, 204, 0, 0.5);
+            }
+            50% { 
+                border-color: #ffed4e;
+                box-shadow: 
+                    inset 0 0 30px rgba(255, 204, 0, 0.5),
+                    0 0 30px rgba(255, 204, 0, 0.8);
+            }
         }
 
         .winning-line.active {
-            border-color: #ffcc00;
+            border-width: 5px;
+            border-color: #00ff00;
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                rgba(0, 255, 0, 0.2) 50%, 
+                transparent 100%);
             box-shadow: 
-                inset 0 0 20px rgba(255, 204, 0, 0.5),
-                0 0 30px rgba(255, 204, 0, 0.8);
+                inset 0 0 30px rgba(0, 255, 0, 0.5),
+                0 0 40px rgba(0, 255, 0, 0.9);
             animation: winningLinePulse 0.5s ease-in-out infinite;
         }
 
         @keyframes winningLinePulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            50% { opacity: 0.7; }
         }
 
         .handle-container {
@@ -618,13 +671,14 @@
                 </p>
                 
                 <div style="background: rgba(0,200,0,0.1); padding: 15px; border-radius: 10px; border: 2px solid #00cc00; margin-bottom: 20px;">
-                    <h3 style="color: #00ff00; margin-bottom: 10px; font-size: 1rem;">🎯 NUDGE SYSTEM:</h3>
-                    <p>• You start with <strong>5 NUDGES</strong></p>
-                    <p>• Maximum bank: <strong>10 NUDGES</strong></p>
+                    <h3 style="color: #00ff00; margin-bottom: 10px; font-size: 1rem;">🎯 GENEROUS NUDGE SYSTEM:</h3>
+                    <p>• You start with <strong>10 NUDGES</strong></p>
+                    <p>• Maximum bank: <strong>20 NUDGES</strong></p>
                     <p>• Use them strategically to create wins!</p>
-                    <p>• Each reel can be nudged once per spin</p>
-                    <p>• Partial matches (3-4 cars) earn MORE nudges</p>
-                    <p>• Winning refreshes your nudges based on tier!</p>
+                    <p>• <strong>Nudge the same reel multiple times to hunt for cars!</strong></p>
+                    <p>• <strong>3 matching cars = +3 nudges!</strong></p>
+                    <p>• <strong>4 matching cars = +5 nudges!</strong></p>
+                    <p>• Winning refreshes nudges based on tier (2-5 nudges!)</p>
                     <p style="font-size: 0.85rem; color: #999; margin-top: 8px;">💡 TIP: Your nudge counter glows green when maxed out!</p>
                 </div>
                 
@@ -633,30 +687,37 @@
                     
                     <div style="margin-bottom: 20px;">
                         <div class="tier-badge tier-legendary" style="margin-bottom: 10px;">LEGENDARY ⭐⭐⭐⭐</div>
-                        <p style="margin-left: 20px;">🏆 All 5 F40s (different colors) <strong>+3 Nudges!</strong></p>
+                        <p style="margin-left: 20px;">🏆 All 5 F40s (different colors) <strong>+5 Nudges + CODE!</strong></p>
                         <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Ultra Rare - Premium game access!</p>
                         <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Cars: 1, 8, 15, 17, 24</p>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
                         <div class="tier-badge tier-epic" style="margin-bottom: 10px;">EPIC ⭐⭐⭐</div>
-                        <p style="margin-left: 20px;">🥈 All 5 F1s / Miuras / 959s <strong>+2 Nudges!</strong></p>
+                        <p style="margin-left: 20px;">🥈 All 5 F1s / Miuras / 959s <strong>+4 Nudges + CODE!</strong></p>
                         <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Very Rare - Tier 3 game access</p>
                         <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">F1s: 2, 9, 11, 18, 25 | Miuras: 4, 6, 13, 20, 22 | 959s: 5, 7, 14, 16, 23</p>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
                         <div class="tier-badge tier-rare" style="margin-bottom: 10px;">RARE ⭐⭐</div>
-                        <p style="margin-left: 20px;">🥉 All 5 RED / BLUE / GREEN cars <strong>+1 Nudge</strong></p>
+                        <p style="margin-left: 20px;">🥉 All 5 RED / BLUE / GREEN cars <strong>+3 Nudges + CODE!</strong></p>
                         <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Uncommon - Tier 2 game access</p>
                         <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">Red: 2,6,15,19,23 | Blue: 5,9,13,17,21 | Green: 1,10,14,18,22</p>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
-                        <div class="tier-badge tier-rare" style="margin-bottom: 10px;">COMMON ⭐</div>
-                        <p style="margin-left: 20px;">All 5 YELLOW / PINK cars <strong>+1 Nudge</strong></p>
+                        <div class="tier-badge tier-common" style="margin-bottom: 10px;">COMMON ⭐</div>
+                        <p style="margin-left: 20px;">All 5 YELLOW / PINK cars <strong>+2 Nudges + CODE!</strong></p>
                         <p style="margin-left: 20px; font-size: 0.9rem; color: #999;">Common - Tier 1 game access</p>
                         <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">Yellow: 3,7,11,20,24 | Pink: 4,8,12,16,25</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,170,0,0.15); border-radius: 10px; border: 2px solid #ffaa00;">
+                        <p style="color: #ffaa00; font-weight: 700; margin-bottom: 8px;">💨 SMALL WIN (Nudges Only):</p>
+                        <p style="margin-left: 20px; font-size: 0.95rem;">All 5 same color BUT with duplicates = <strong>+4 Nudges!</strong></p>
+                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">Example: 3x Blue #9 + 2x Blue #5 = Small Win</p>
+                        <p style="margin-left: 20px; font-size: 0.85rem; color: #999;">No code awarded - nudge for all different to get a code!</p>
                     </div>
                 </div>
                 
@@ -671,10 +732,11 @@
                 
                 <div style="margin-top: 20px; padding: 15px; background: rgba(255,0,0,0.1); border-radius: 10px; border: 2px solid #ff0000;">
                     <h3 style="color: #ff0000; margin-bottom: 10px; font-size: 1rem;">⚠️ IMPORTANT:</h3>
-                    <p>• You must have 5 DIFFERENT car numbers to win</p>
-                    <p>• Duplicate car numbers = NOT a win</p>
-                    <p>• For color wins: All different models required</p>
-                    <p>• For model wins: All different colors required</p>
+                    <p>• <strong>PERFECT WIN:</strong> 5 DIFFERENT car numbers = Winner Code!</p>
+                    <p>• <strong>SMALL WIN:</strong> Same color but duplicates = Nudges only</p>
+                    <p>• For color wins: All different models required for code</p>
+                    <p>• For model wins: All different colors required for code</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #ffaa00;">💡 Use multiple nudges on same reel to hunt for the missing car!</p>
                 </div>
                 
                 <div style="margin-top: 20px; padding: 15px; background: rgba(100,200,255,0.1); border-radius: 10px; border: 2px solid #66ccff;">
@@ -749,21 +811,21 @@
 
         // Tier configuration with COLLECTION VALUES
         const TIERS = {
-            'F40': { name: 'Legendary', class: 'tier-legendary', rarity: 1, value: '⭐⭐⭐⭐', description: 'Ultra Rare!', nudgeBonus: 3 },
-            'F1': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 2 },
-            'Miura': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 2 },
-            '959': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 2 },
-            'Yellow': { name: 'Common', class: 'tier-common', rarity: 4, value: '⭐', description: 'Common Find', nudgeBonus: 1 },
-            'Pink': { name: 'Common', class: 'tier-common', rarity: 4, value: '⭐', description: 'Common Find', nudgeBonus: 1 },
-            'Green': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 1 },
-            'Red': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 1 },
-            'Blue': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 1 }
+            'F40': { name: 'Legendary', class: 'tier-legendary', rarity: 1, value: '⭐⭐⭐⭐', description: 'Ultra Rare!', nudgeBonus: 5 },
+            'F1': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 4 },
+            'Miura': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 4 },
+            '959': { name: 'Epic', class: 'tier-epic', rarity: 2, value: '⭐⭐⭐', description: 'Very Rare', nudgeBonus: 4 },
+            'Yellow': { name: 'Common', class: 'tier-common', rarity: 4, value: '⭐', description: 'Common Find', nudgeBonus: 2 },
+            'Pink': { name: 'Common', class: 'tier-common', rarity: 4, value: '⭐', description: 'Common Find', nudgeBonus: 2 },
+            'Green': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 3 },
+            'Red': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 3 },
+            'Blue': { name: 'Rare', class: 'tier-rare', rarity: 3, value: '⭐⭐', description: 'Uncommon', nudgeBonus: 3 }
         };
 
         // Game state
         let spinning = false;
-        let nudgesAvailable = 5; // START WITH 5 NUDGES!
-        const MAX_NUDGES = 10; // CAP AT 10 NUDGES
+        let nudgesAvailable = 10; // START WITH 10 NUDGES!
+        const MAX_NUDGES = 20; // CAP AT 20 NUDGES
         let totalSpins = 0;
         let totalWins = 0;
         let currentResult = null;
@@ -798,9 +860,9 @@
                 strip.id = `strip${i}`;
                 
                 // Create a long strip of cars for smooth animation
-                // We'll use 20 cars (multiple full cycles)
+                // We'll use 40 cars (gives lots of exploration room!)
                 const carNumbers = Object.keys(CARS).map(Number);
-                for (let j = 0; j < 20; j++) {
+                for (let j = 0; j < 40; j++) {
                     const carNum = carNumbers[Math.floor(Math.random() * carNumbers.length)];
                     const item = document.createElement('div');
                     item.className = 'reel-item';
@@ -847,7 +909,7 @@
             totalSpins++;
             currentResult = null;
             // DON'T reset nudges - keep the bank!
-            nudgedReels = [false, false, false, false, false]; // Reset nudge tracking per spin
+            nudgedReels = [false, false, false, false, false]; // Reset nudge TRACKING (not restriction!) per spin
             
             const button = document.getElementById('pullHandle');
             button.disabled = true;
@@ -942,30 +1004,46 @@
             const cars = getCurrentCars();
             const carData = cars.map(num => CARS[num]);
             
-            // Check for same color
+            // Check for PERFECT same color (all different models) - BIG WIN with code
             const allSameColor = carData.every(c => c.color === carData[0].color);
             if (allSameColor) {
                 const models = new Set(carData.map(c => c.model));
-                if (models.size === 5) { // All different models
+                if (models.size === 5) { // All different models - PERFECT!
                     return {
-                        type: 'color',
+                        type: 'color_perfect',
                         value: carData[0].color,
                         cars: cars,
                         tier: TIERS[carData[0].color]
                     };
+                } else {
+                    // All same color but has duplicates - SMALL WIN (nudges only, no code)
+                    return {
+                        type: 'color_small',
+                        value: carData[0].color,
+                        cars: cars,
+                        duplicates: 5 - models.size
+                    };
                 }
             }
             
-            // Check for same model
+            // Check for PERFECT same model (all different colors) - BIG WIN with code
             const allSameModel = carData.every(c => c.model === carData[0].model);
             if (allSameModel) {
                 const colors = new Set(carData.map(c => c.color));
-                if (colors.size === 5) { // All different colors
+                if (colors.size === 5) { // All different colors - PERFECT!
                     return {
-                        type: 'model',
+                        type: 'model_perfect',
                         value: carData[0].model,
                         cars: cars,
                         tier: TIERS[carData[0].model]
+                    };
+                } else {
+                    // All same model but has duplicates - SMALL WIN (nudges only, no code)
+                    return {
+                        type: 'model_small',
+                        value: carData[0].model,
+                        cars: cars,
+                        duplicates: 5 - colors.size
                     };
                 }
             }
@@ -997,21 +1075,22 @@
             currentResult = result;
             const display = document.getElementById('resultDisplay');
             
-            if (result.type === 'color' || result.type === 'model') {
-                // BIG WIN!
+            // PERFECT WINS - All different, get a code!
+            if (result.type === 'color_perfect' || result.type === 'model_perfect') {
+                // BIG WIN WITH CODE!
                 totalWins++;
                 document.querySelector('.winning-line').classList.add('active');
                 
-                const winType = result.type === 'color' ? `All ${result.value} Cars` : `All ${result.value}s`;
+                const winType = result.type === 'color_perfect' ? `All ${result.value} Cars` : `All ${result.value}s`;
                 const code = generateWinCode(result);
                 
                 // Add nudge bonus based on tier!
                 nudgesAvailable = Math.min(nudgesAvailable + result.tier.nudgeBonus, MAX_NUDGES);
                 
                 display.innerHTML = `
-                    <div class="result-message win">🎉 WINNER! 🎉</div>
+                    <div class="result-message win">🎉 PERFECT WIN! 🎉</div>
                     <div class="tier-badge ${result.tier.class}">${result.tier.name}</div>
-                    <p style="color: #fff; margin: 10px 0;">${winType}!</p>
+                    <p style="color: #fff; margin: 10px 0;">${winType} - All Different!</p>
                     <p style="color: #ffaa00; font-size: 1rem;">${result.tier.value} ${result.tier.description}</p>
                     <p style="color: #00ff00; font-size: 1rem; margin-top: 10px;">+${result.tier.nudgeBonus} Nudge${result.tier.nudgeBonus > 1 ? 's' : ''} Bonus!</p>
                     <div class="winner-code">
@@ -1033,10 +1112,26 @@
                 // Save the win
                 saveWin(code, result);
                 
+            } else if (result.type === 'color_small' || result.type === 'model_small') {
+                // SMALL WIN - All same color/model but has duplicates - NUDGES ONLY!
+                document.querySelector('.winning-line').classList.add('active');
+                
+                const winType = result.type === 'color_small' ? `All ${result.value} Cars!` : `All ${result.value}s!`;
+                const nudgesEarned = 4; // Small win = +4 nudges
+                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES);
+                
+                display.innerHTML = `
+                    <div class="result-message" style="color: #ffaa00; text-shadow: 0 0 15px #ffaa00;">💨 SMALL WIN! 💨</div>
+                    <p style="color: #fff; margin: 10px 0;">${winType}</p>
+                    <p style="color: #ff9900; font-size: 0.95rem;">Line has ${result.duplicates} duplicate${result.duplicates > 1 ? 's' : ''}</p>
+                    <p style="color: #00ff00; font-size: 1.3rem; margin-top: 10px;">+${nudgesEarned} Nudges Earned!</p>
+                    <p style="color: #999; font-size: 0.9rem; margin-top: 10px;">Get all different for a winner code!</p>
+                `;
+                
             } else if (result.type === 'partial' && result.matches >= 3) {
-                // Partial win - award nudges with better explanation
-                const nudgesEarned = result.matches === 4 ? 2 : 1;
-                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES); // CAP AT 10!
+                // Partial win - award GENEROUS nudges!
+                const nudgesEarned = result.matches === 4 ? 5 : 3; // 4-match = +5, 3-match = +3
+                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES); // CAP AT 20!
                 
                 // Figure out what they matched and what they need
                 const cars = getCurrentCars();
@@ -1089,10 +1184,10 @@
         }
 
         function nudgeReel(reelIndex, direction) {
-            if (nudgesAvailable <= 0 || spinning || nudgedReels[reelIndex]) return;
+            if (nudgesAvailable <= 0 || spinning) return; // REMOVED nudgedReels check - allows multiple nudges!
             
             nudgesAvailable--;
-            nudgedReels[reelIndex] = true; // Mark this reel as nudged
+            // DON'T mark as nudged - allow multiple nudges per reel!
             updateDisplay(); // UPDATE IMMEDIATELY!
             
             // Move one car up or down
@@ -1100,10 +1195,10 @@
             const newPosition = reelPositions[reelIndex] + (direction * 140);
             
             // Safety check - don't go out of bounds
-            // We have 20 items in the strip, each 140px tall
-            // Position -140 shows item 1 in center, -2520 shows item 18 in center
+            // We have 40 items in the strip, each 140px tall
+            // Position -140 shows item 1 in center, -5320 shows item 38 in center
             const maxPosition = -140;   // Most positive (item 1 centered)
-            const minPosition = -2520;  // Most negative (item 18 centered)
+            const minPosition = -5320;  // Most negative (item 38 centered)
             
             if (newPosition <= maxPosition && newPosition >= minPosition) {
                 reelPositions[reelIndex] = newPosition;
@@ -1111,7 +1206,6 @@
             } else {
                 // Out of bounds - restore the nudge
                 nudgesAvailable++;
-                nudgedReels[reelIndex] = false;
                 updateDisplay();
                 return;
             }
@@ -1127,24 +1221,25 @@
         }
         
         function displayResultAfterNudge(result) {
-            // Same as displayResult but WITHOUT awarding nudges for partial matches
+            // Same as displayResult but shows remaining nudge options
             const display = document.getElementById('resultDisplay');
             
-            if (result.type === 'color' || result.type === 'model') {
+            // PERFECT WINS - with codes
+            if (result.type === 'color_perfect' || result.type === 'model_perfect') {
                 // BIG WIN!
                 totalWins++;
                 document.querySelector('.winning-line').classList.add('active');
                 
-                const winType = result.type === 'color' ? `All ${result.value} Cars` : `All ${result.value}s`;
+                const winType = result.type === 'color_perfect' ? `All ${result.value} Cars` : `All ${result.value}s`;
                 const code = generateWinCode(result);
                 
                 // Add nudge bonus based on tier!
                 nudgesAvailable = Math.min(nudgesAvailable + result.tier.nudgeBonus, MAX_NUDGES);
                 
                 display.innerHTML = `
-                    <div class="result-message win">🎉 WINNER! 🎉</div>
+                    <div class="result-message win">🎉 PERFECT WIN! 🎉</div>
                     <div class="tier-badge ${result.tier.class}">${result.tier.name}</div>
-                    <p style="color: #fff; margin: 10px 0;">${winType}!</p>
+                    <p style="color: #fff; margin: 10px 0;">${winType} - All Different!</p>
                     <p style="color: #ffaa00; font-size: 1rem;">${result.tier.value} ${result.tier.description}</p>
                     <p style="color: #00ff00; font-size: 1rem; margin-top: 10px;">+${result.tier.nudgeBonus} Nudge${result.tier.nudgeBonus > 1 ? 's' : ''} Bonus!</p>
                     <div class="winner-code">
@@ -1166,9 +1261,24 @@
                 // Save the win
                 saveWin(code, result);
                 
+            } else if (result.type === 'color_small' || result.type === 'model_small') {
+                // SMALL WIN after nudge!
+                document.querySelector('.winning-line').classList.add('active');
+                
+                const winType = result.type === 'color_small' ? `All ${result.value} Cars!` : `All ${result.value}s!`;
+                const nudgesEarned = 4;
+                nudgesAvailable = Math.min(nudgesAvailable + nudgesEarned, MAX_NUDGES);
+                
+                display.innerHTML = `
+                    <div class="result-message" style="color: #ffaa00; text-shadow: 0 0 15px #ffaa00;">💨 SMALL WIN! 💨</div>
+                    <p style="color: #fff; margin: 10px 0;">${winType}</p>
+                    <p style="color: #ff9900; font-size: 0.95rem;">Line has ${result.duplicates} duplicate${result.duplicates > 1 ? 's' : ''}</p>
+                    <p style="color: #00ff00; font-size: 1.3rem; margin-top: 10px;">+${nudgesEarned} Nudges Earned!</p>
+                    <p style="color: #999; font-size: 0.9rem; margin-top: 10px;">Nudge for all different to get a code!</p>
+                `;
+                
             } else if (result.type === 'partial' && result.matches >= 3) {
-                // Partial match after nudge - DON'T award more nudges!
-                // Just show what they have
+                // Partial match after nudge - SHOW REMAINING NUDGE BUTTONS!
                 const cars = getCurrentCars();
                 const carData = cars.map(num => CARS[num]);
                 
@@ -1193,13 +1303,29 @@
                     whatYouNeed = `You need 5 DIFFERENT colors of ${maxModel}s to win!`;
                 }
                 
-                display.innerHTML = `
-                    <div class="result-message close">💨 STILL CLOSE! 💨</div>
-                    <p style="color: #fff; margin: 10px 0;">You matched ${matchType}!</p>
-                    <p style="color: #ff6600; font-size: 0.95rem; margin: 10px 0;">${whatYouNeed}</p>
-                    <p style="color: #999; font-size: 0.9rem; margin-top: 15px;">Nudges available: ${nudgesAvailable}</p>
-                    <p style="color: #666; font-size: 0.8rem;">Pull the handle to spin again!</p>
-                `;
+                // KEEP SHOWING NUDGE BUTTONS FOR UN-NUDGED REELS!
+                if (nudgesAvailable > 0) {
+                    display.innerHTML = `
+                        <div class="result-message close">💨 STILL CLOSE! 💨</div>
+                        <p style="color: #fff; margin: 10px 0;">You matched ${matchType}!</p>
+                        <p style="color: #ff6600; font-size: 0.95rem; margin: 10px 0;">${whatYouNeed}</p>
+                        <div class="nudge-controls">
+                            ${[0, 1, 2, 3, 4].map(i => `
+                                <button class="nudge-btn" onclick="nudgeReel(${i}, -1)" ${nudgedReels[i] ? 'disabled' : ''}>⬆️ Reel ${i + 1}</button>
+                                <button class="nudge-btn" onclick="nudgeReel(${i}, 1)" ${nudgedReels[i] ? 'disabled' : ''}>⬇️ Reel ${i + 1}</button>
+                            `).join('')}
+                        </div>
+                        <p style="color: #999; font-size: 0.9rem; margin-top: 15px;">Nudges available: ${nudgesAvailable}</p>
+                        <p style="color: #666; font-size: 0.8rem;">Each reel can only be nudged once per result</p>
+                    `;
+                } else {
+                    display.innerHTML = `
+                        <div class="result-message close">💨 SO CLOSE! 💨</div>
+                        <p style="color: #fff; margin: 10px 0;">You matched ${matchType}!</p>
+                        <p style="color: #ff6600; font-size: 0.95rem; margin: 10px 0;">${whatYouNeed}</p>
+                        <p style="color: #999; font-size: 0.9rem; margin-top: 15px;">Out of nudges - pull again!</p>
+                    `;
+                }
                 
             } else {
                 // No win
@@ -1338,7 +1464,7 @@
         function loadGameState() {
             const state = JSON.parse(localStorage.getItem('garageSlots_state') || '{}');
             totalSpins = state.totalSpins || 0;
-            nudgesAvailable = state.nudgesAvailable !== undefined ? state.nudgesAvailable : 5; // Default to 5, not 0!
+            nudgesAvailable = state.nudgesAvailable !== undefined ? state.nudgesAvailable : 10; // Default to 10, not 0!
             totalWins = state.totalWins || 0;
         }
 
