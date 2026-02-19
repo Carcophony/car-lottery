@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Car Build Slots</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --panel: #16161f;
+    --neon: #00f5ff;
+    --neon2: #ff2d78;
+    --neon3: #ffe600;
+    --green: #00ff88;
+    --dim: #2a2a3a;
+    --text: #e0e8ff;
+    --subtext: #7080a0;
+    --spin-btn: #ff2d78;
+    --reset-btn: #444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+  /* ---- HUD ---- */
+  #hud {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(10,10,15,0.95);
+    border-bottom: 1px solid var(--dim);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #coin-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--neon3);
+    flex: 1;
+  }
+  #coin-display span { font-size: 0.75rem; color: var(--subtext); }
+  #phase-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    color: var(--neon);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    flex: 1;
+    text-align: center;
+  }
+  #reset-btn {
+    background: var(--reset-btn);
+    border: none;
+    color: #aaa;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  /* ---- MAIN ---- */
+  #main {
+    width: 100%;
+    max-width: 480px;
+    padding: 12px;
+    flex: 1;
+  }
+  /* ---- PHASE HEADERS ---- */
+  .phase-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--neon);
+    text-align: center;
+    margin: 10px 0 4px;
+    text-shadow: 0 0 14px var(--neon);
+  }
+  .phase-sub {
+    font-size: 0.8rem;
+    color: var(--subtext);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  /* ---- BODY GRID ---- */
+  #body-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .body-card {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 10px;
+    padding: 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .body-card:active { transform: scale(0.95); }
+  .body-card:hover { border-color: var(--neon); }
+  .body-card img, .body-card .img-fallback {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 6px;
+    background: var(--dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+  .body-card .img-fallback {
+    font-size: 1.6rem;
+  }
+  .body-card .card-label {
+    font-size: 0.65rem;
+    color: var(--subtext);
+    margin-top: 4px;
+    font-family: 'Orbitron', monospace;
+  }
+  /* ---- SLOTS ---- */
+  #slot-machine {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  #slot-machine h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: var(--neon);
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+  #reels-container {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .reel {
+    background: var(--bg);
+    border: 2px solid var(--dim);
+    border-radius: 8px;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .reel-inner {
+    font-size: 0.7rem;
+    color: var(--neon);
+    text-align: center;
+    padding: 4px;
+    font-family: 'Orbitron', monospace;
+    transition: transform 0.4s;
+  }
+  .reel.spinning .reel-inner {
+    animation: spinAnim 0.15s infinite;
+  }
+  @keyframes spinAnim {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-10px); opacity: 0.3; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  #reel-result-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .collect-btn {
+    width: 90px;
+    padding: 5px 0;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+  .collect-btn:disabled {
+    background: var(--dim);
+    color: var(--subtext);
+    cursor: not-allowed;
+  }
+  #spin-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--spin-btn);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 900;
+    color: #fff;
+    cursor: pointer;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    box-shadow: 0 0 20px rgba(255,45,120,0.4);
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  #spin-btn:active { transform: scale(0.97); }
+  #spin-btn:disabled { background: var(--dim); box-shadow: none; cursor: not-allowed; }
+  #spin-cost { font-size: 0.7rem; color: var(--subtext); text-align: center; margin-top: 6px; }
+  /* ---- BUILD PROGRESS ---- */
+  #build-progress {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 14px;
+  }
+  #build-progress h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    color: var(--neon);
+    margin-bottom: 10px;
+  }
+  #pieces-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .piece-box {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--dim);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--subtext);
+    text-align: center;
+    font-family: 'Orbitron', monospace;
+    background: var(--bg);
+    transition: background 0.4s, border-color 0.4s;
+  }
+  .piece-box.filled {
+    background: rgba(0,255,136,0.15);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  #progress-bar-wrap {
+    margin-top: 8px;
+    background: var(--bg);
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+    border: 1px solid var(--dim);
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--neon));
+    border-radius: 99px;
+    transition: width 0.5s;
+  }
+  #progress-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    color: var(--green);
+    margin-top: 5px;
+    text-align: right;
+  }
+  /* ---- COMPONENT SELECTION ---- */
+  #component-panel {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 14px;
+  }
+  #component-panel h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: var(--neon2);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  #comp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .comp-card {
+    background: var(--bg);
+    border: 2px solid var(--dim);
+    border-radius: 8px;
+    padding: 6px 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.1s;
+  }
+  .comp-card:active { transform: scale(0.95); }
+  .comp-card:hover { border-color: var(--neon2); }
+  .comp-card.selected { border-color: var(--neon); background: rgba(0,245,255,0.08); }
+  .comp-card img, .comp-card .img-fallback {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    background: var(--dim);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+  .comp-card .card-label {
+    font-size: 0.58rem;
+    color: var(--subtext);
+    margin-top: 3px;
+    font-family: 'Orbitron', monospace;
+  }
+  /* ---- METERS ---- */
+  #stats-panel {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 14px;
+  }
+  #stats-panel h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    color: var(--neon);
+    margin-bottom: 10px;
+  }
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+  .stat-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    color: var(--subtext);
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .stat-bar-bg {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 99px;
+    height: 10px;
+    overflow: hidden;
+    border: 1px solid var(--dim);
+  }
+  .stat-bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s;
+    width: 0%;
+  }
+  .stat-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    color: var(--text);
+    width: 28px;
+    text-align: right;
+  }
+  /* ---- BUILD SUMMARY ---- */
+  #build-summary {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 14px;
+  }
+  #build-summary h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    color: var(--neon3);
+    margin-bottom: 8px;
+  }
+  #summary-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .summary-chip {
+    background: var(--bg);
+    border: 1px solid var(--dim);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.6rem;
+    color: var(--text);
+    font-family: 'Orbitron', monospace;
+  }
+  .summary-chip .chip-cat { color: var(--subtext); font-size: 0.5rem; display: block; }
+  /* ---- MISSION ---- */
+  #mission-panel {
+    background: var(--panel);
+    border: 2px solid var(--dim);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  #mission-panel h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--neon3);
+    margin-bottom: 6px;
+    text-shadow: 0 0 16px var(--neon3);
+  }
+  #mission-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--neon2);
+    margin: 10px 0;
+    text-shadow: 0 0 20px var(--neon2);
+  }
+  #mission-result {
+    font-size: 2.5rem;
+    margin: 12px 0;
+  }
+  #mission-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  #mission-payout {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    color: var(--neon3);
+    font-weight: 900;
+    text-shadow: 0 0 12px var(--neon3);
+    margin-bottom: 14px;
+  }
+  #mission-desc {
+    font-size: 0.8rem;
+    color: var(--subtext);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  #new-game-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--neon), var(--green));
+    border: none;
+    border-radius: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #000;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  #new-game-btn:active { transform: scale(0.97); }
+  /* ---- TOAST ---- */
+  #toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0,245,255,0.15);
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    z-index: 999;
+    transition: transform 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  /* ---- BIG MESSAGE ---- */
+  #big-msg {
+    background: linear-gradient(135deg, rgba(0,245,255,0.1), rgba(0,255,136,0.1));
+    border: 2px solid var(--green);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 14px;
+    animation: pulseBorder 1.5s infinite;
+  }
+  @keyframes pulseBorder {
+    0%, 100% { border-color: var(--green); }
+    50% { border-color: var(--neon); }
+  }
+  #big-msg h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green);
+  }
+  .hidden { display: none !important; }
+  /* ---- PHASE STEP INDICATOR ---- */
+  #phase-steps {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .pstep {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.55rem;
+    padding: 3px 8px;
+    border-radius: 99px;
+    border: 1px solid var(--dim);
+    color: var(--subtext);
+  }
+  .pstep.active { border-color: var(--neon2); color: var(--neon2); background: rgba(255,45,120,0.1); }
+  .pstep.done { border-color: var(--green); color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- HUD -->
+<div id="hud">
+  <div id="coin-display">🪙 <span id="coins-val">1000</span> <span>coins</span></div>
+  <div id="phase-label" id="phase-label">PHASE 1: BODY</div>
+  <button id="reset-btn" onclick="resetGame()">⟳ RESET</button>
+</div>
+
+<div id="main">
+
+  <!-- PHASE 1: Body Selection -->
+  <div id="phase1">
+    <div class="phase-title">⚙ SELECT YOUR BODY</div>
+    <div class="phase-sub">Choose a chassis to begin your build</div>
+    <div id="body-grid"></div>
+  </div>
+
+  <!-- PHASE 1b: Slot Machine for body pieces -->
+  <div id="phase1b" class="hidden">
+    <div class="phase-title" id="building-label"></div>
+    <div class="phase-sub">Spin to collect all 6 body pieces • 20 coins per spin</div>
+
+    <div id="build-progress">
+      <h3>BUILD PROGRESS</h3>
+      <div id="pieces-row"></div>
+      <div id="progress-bar-wrap"><div id="progress-bar" style="width:0%"></div></div>
+      <div id="progress-label">0 / 6</div>
+    </div>
+
+    <div id="slot-machine">
+      <h3>BODY PARTS REELS</h3>
+      <div id="reels-container">
+        <div class="reel" id="reel0"><div class="reel-inner" id="ri0">?</div></div>
+        <div class="reel" id="reel1"><div class="reel-inner" id="ri1">?</div></div>
+        <div class="reel" id="reel2"><div class="reel-inner" id="ri2">?</div></div>
+      </div>
+      <div id="reel-result-row">
+        <button class="collect-btn" id="cb0" disabled onclick="collect(0)">COLLECT</button>
+        <button class="collect-btn" id="cb1" disabled onclick="collect(1)">COLLECT</button>
+        <button class="collect-btn" id="cb2" disabled onclick="collect(2)">COLLECT</button>
+      </div>
+      <button id="spin-btn" onclick="spin()">▶ SPIN</button>
+      <div id="spin-cost">Cost: 20 coins per spin</div>
+    </div>
+    <div id="body-complete-msg" class="hidden">
+      <div id="big-msg"><h2>🏗 BODY COMPLETE! Unlocking components...</h2></div>
+    </div>
+  </div>
+
+  <!-- PHASE 2: Component Selection -->
+  <div id="phase2" class="hidden">
+    <div class="phase-title">🔧 BUILD YOUR CAR</div>
+    <div id="phase-steps"></div>
+
+    <div id="comp-select-panel">
+      <div id="component-panel">
+        <h3 id="comp-cat-label">SELECT ENGINE</h3>
+        <div id="comp-grid"></div>
+        <div id="spin-cost-comp" style="font-size:0.7rem;color:var(--subtext);text-align:center">Selecting costs 50 coins + confirm spin</div>
+      </div>
+
+      <div id="slot-machine-comp">
+        <div id="slot-machine">
+          <h3>COMPONENT REEL</h3>
+          <div id="reels-container-comp">
+            <div class="reel" id="creel0"><div class="reel-inner" id="cri0">?</div></div>
+            <div class="reel" id="creel1"><div class="reel-inner" id="cri1">?</div></div>
+            <div class="reel" id="creel2"><div class="reel-inner" id="cri2">?</div></div>
+          </div>
+          <div id="reel-result-row-comp">
+            <button class="collect-btn" id="ccb0" disabled onclick="collectComp(0)">COLLECT</button>
+            <button class="collect-btn" id="ccb1" disabled onclick="collectComp(1)">COLLECT</button>
+            <button class="collect-btn" id="ccb2" disabled onclick="collectComp(2)">COLLECT</button>
+          </div>
+          <button id="spin-btn-comp" onclick="spinComp()" disabled>▶ SPIN</button>
+          <div style="font-size:0.7rem;color:var(--subtext);text-align:center;margin-top:6px">Pick a component above first</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stats-panel">
+      <h3>PERFORMANCE METERS</h3>
+      <div class="stat-row">
+        <div class="stat-name">POWER</div>
+        <div class="stat-bar-bg"><div class="stat-bar" id="bar-power" style="background:linear-gradient(90deg,#ff2d78,#ff7043)"></div></div>
+        <div class="stat-val" id="val-power">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-name">HANDLING</div>
+        <div class="stat-bar-bg"><div class="stat-bar" id="bar-handling" style="background:linear-gradient(90deg,#00f5ff,#00bcd4)"></div></div>
+        <div class="stat-val" id="val-handling">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-name">EFFICIENCY</div>
+        <div class="stat-bar-bg"><div class="stat-bar" id="bar-efficiency" style="background:linear-gradient(90deg,#00ff88,#4caf50)"></div></div>
+        <div class="stat-val" id="val-efficiency">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-name">BUDGET</div>
+        <div class="stat-bar-bg"><div class="stat-bar" id="bar-budget" style="background:linear-gradient(90deg,#ffe600,#ff9800)"></div></div>
+        <div class="stat-val" id="val-budget">0</div>
+      </div>
+    </div>
+
+    <div id="build-summary">
+      <h3>YOUR BUILD SO FAR</h3>
+      <div id="summary-items"></div>
+    </div>
+
+    <div id="phase2-complete" class="hidden">
+      <div id="big-msg"><h2>🔒 BUILD LOCKED IN! GO TO MISSION...</h2></div>
+      <button id="go-mission-btn" style="width:100%;padding:13px;background:var(--neon2);border:none;border-radius:10px;font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:#fff;cursor:pointer;margin-top:10px" onclick="startMission()">🏁 START MISSION</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3: Mission -->
+  <div id="phase3" class="hidden">
+    <div id="mission-panel">
+      <h2>🏁 MISSION ASSIGNMENT</h2>
+      <div id="mission-name"></div>
+      <div id="mission-desc"></div>
+      <div id="mission-result"></div>
+      <div id="mission-score"></div>
+      <div id="mission-payout"></div>
+      <button id="new-game-btn" onclick="resetGame()">🔄 BUILD ANOTHER CAR</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast">Toast!</div>
+
+<script>
+// ============================================================
+// GAME DATA
+// ============================================================
+const BODIES = [
+  {name:'Truck',   emoji:'🛻', power:60,handling:30,efficiency:30,budget:50},
+  {name:'Sedan',   emoji:'🚗', power:40,handling:60,efficiency:70,budget:70},
+  {name:'Coupe',   emoji:'🏎', power:70,handling:70,efficiency:50,budget:40},
+  {name:'Sports',  emoji:'🏎', power:90,handling:85,efficiency:30,budget:20},
+  {name:'Convertible',emoji:'🚘',power:65,handling:65,efficiency:45,budget:35},
+  {name:'SUV',     emoji:'🚙', power:55,handling:40,efficiency:40,budget:60},
+  {name:'Wagon',   emoji:'🚐', power:45,handling:50,efficiency:65,budget:75},
+  {name:'Van',     emoji:'🚌', power:40,handling:30,efficiency:60,budget:80},
+];
+const COMPONENTS = {
+  Engine: [
+    {name:'V12',  emoji:'⚡',power:100,handling:0,  efficiency:10,budget:5},
+    {name:'V10',  emoji:'🔥',power:90, handling:5,  efficiency:15,budget:15},
+    {name:'V8',   emoji:'💪',power:75, handling:10, efficiency:25,budget:30},
+    {name:'V6',   emoji:'🔧',power:60, handling:15, efficiency:40,budget:50},
+    {name:'I6',   emoji:'🛞',power:55, handling:20, efficiency:50,budget:55},
+    {name:'Turbo',emoji:'💨',power:80, handling:10, efficiency:30,budget:35},
+    {name:'Rotary',emoji:'🌀',power:70,handling:30, efficiency:20,budget:40},
+    {name:'Electric',emoji:'⚡',power:65,handling:20,efficiency:95,budget:45},
+  ],
+  Transmission: [
+    {name:'Manual',emoji:'🕹',handling:30,power:5,efficiency:10,budget:60},
+    {name:'Auto',  emoji:'🤖',handling:10,power:0,efficiency:20,budget:70},
+    {name:'DCT',   emoji:'⚙', handling:25,power:10,efficiency:15,budget:40},
+    {name:'CVT',   emoji:'〰️',handling:5, power:0,efficiency:30,budget:65},
+  ],
+  Wheels: [
+    {name:'Steel', emoji:'⚫',handling:20,power:0,efficiency:30,budget:80},
+    {name:'Alloy', emoji:'🔘',handling:40,power:0,efficiency:20,budget:55},
+    {name:'Forged',emoji:'🔵',handling:60,power:5,efficiency:15,budget:30},
+    {name:'Carbon',emoji:'⬛',handling:80,power:5,efficiency:10,budget:10},
+  ],
+  'Drive Type': [
+    {name:'FWD',emoji:'⬅️',handling:30,power:-5,efficiency:25,budget:70},
+    {name:'RWD',emoji:'➡️',handling:55,power:10,efficiency:15,budget:50},
+    {name:'AWD',emoji:'↔️',handling:70,power:0,efficiency:5, budget:35},
+  ],
+  Tech: [
+    {name:'GPS',   emoji:'🗺',handling:5,power:0,efficiency:5,budget:85},
+    {name:'Stereo',emoji:'🎵',handling:0,power:0,efficiency:0,budget:90},
+    {name:'Phone', emoji:'📱',handling:5,power:0,efficiency:5,budget:80},
+    {name:'HUD',   emoji:'🖥',handling:10,power:5,efficiency:5,budget:75},
+  ],
+};
+const COMP_CATS = ['Engine','Transmission','Wheels','Drive Type','Tech'];
+const MISSIONS = [
+  {name:'Drag Race',        emoji:'🏁',desc:'Flat-out straight-line speed. Power is everything.',
+    score:(b,c)=>b.power*0.7 + c.power*0.3},
+  {name:'Granny Haul 500mi',emoji:'🧓',desc:'Economy run. Keep it smooth and efficient.',
+    score:(b,c)=>b.efficiency*0.6 + c.efficiency*0.4},
+  {name:'Mud Bog Crawl',    emoji:'🌧',desc:'Off-road carnage. AWD and ground clearance win.',
+    score:(b,c)=>{
+      let s = (b.power+c.power)*0.4;
+      if(c.drive==='AWD') s+=30;
+      if(b.body==='Truck'||b.body==='SUV') s+=20;
+      if(c.tyres==='Mud'||c.tyres==='AllTerrain') s+=20;
+      return Math.min(s,100);
+    }},
+  {name:'Track Day',        emoji:'🏎',desc:'Precision driving. Handling and power balance wins.',
+    score:(b,c)=>b.handling*0.4 + c.handling*0.35 + b.power*0.15 + c.power*0.1},
+  {name:'Daily Commute',    emoji:'🚦',desc:'Efficiency, comfort, and budget-friendliness.',
+    score:(b,c)=>b.efficiency*0.4 + c.efficiency*0.3 + b.budget*0.15 + c.budget*0.15},
+  {name:'Mountain Rally',   emoji:'⛰',desc:'Twisty roads and elevation changes. AWD + handling.',
+    score:(b,c)=>b.handling*0.5 + c.handling*0.35 + (c.drive==='AWD'?15:0)},
+  {name:'Van Life Road Trip',emoji:'🏕',desc:'Distance, reliability, and cabin space matter.',
+    score:(b,c)=>b.budget*0.4 + c.efficiency*0.4 + (b.body==='Van'||b.body==='Wagon'?20:0)},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {};
+function initState() {
+  state = {
+    coins: 1000,
+    phase: 1,         // 1 = body select, 1b = body slots, 2 = components, 3 = mission
+    selectedBody: null,
+    pieces: new Set(),
+    compCatIdx: 0,
+    selectedComp: null,
+    pendingComp: null,
+    build: {body:null, engine:null, transmission:null, wheels:null, drive:null, tech:null},
+    reelResults: [null,null,null],
+    compReelResults: [null,null,null],
+    spinning: false,
+    compSpinning: false,
+    stats: {power:0,handling:0,efficiency:0,budget:0},
+    mission: null,
+  };
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function imgSrc(filename) { return 'images/' + filename + '.png'; }
+function imageEl(name, fallbackEmoji) {
+  const img = document.createElement('img');
+  img.src = imgSrc(name);
+  img.alt = name;
+  img.onerror = function() {
+    const fb = document.createElement('div');
+    fb.className = 'img-fallback';
+    fb.textContent = fallbackEmoji || '🚗';
+    fb.style.cssText = 'width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:var(--dim);border-radius:6px';
+    img.replaceWith(fb);
+  };
+  return img;
+}
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.color = color || 'var(--neon)';
+  t.style.borderColor = color || 'var(--neon)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+function updateCoins() {
+  document.getElementById('coins-val').textContent = state.coins;
+}
+function spendCoins(amount, label) {
+  if(state.coins < amount) { showToast('❌ NOT ENOUGH COINS!','var(--neon2)'); return false; }
+  state.coins -= amount;
+  updateCoins();
+  showToast(`-${amount} coins${label?' for '+label:''}`, 'var(--neon3)');
+  return true;
+}
+function show(id) { document.getElementById(id)?.classList.remove('hidden'); }
+function hide(id) { document.getElementById(id)?.classList.add('hidden'); }
+
+// ============================================================
+// PHASE 1: BODY SELECTION
+// ============================================================
+function renderBodyGrid() {
+  const grid = document.getElementById('body-grid');
+  grid.innerHTML = '';
+  BODIES.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'body-card';
+    card.appendChild(imageEl(b.name, b.emoji));
+    const lbl = document.createElement('div');
+    lbl.className = 'card-label';
+    lbl.textContent = b.name.toUpperCase();
+    card.appendChild(lbl);
+    card.onclick = () => selectBody(b);
+    grid.appendChild(card);
+  });
+}
+function selectBody(b) {
+  console.log('[Phase 1] Body selected:', b.name);
+  state.selectedBody = b;
+  state.pieces.clear();
+  hide('phase1');
+  show('phase1b');
+  document.getElementById('building-label').textContent = `🏗 Building ${b.name.toUpperCase()}! Collect 6 pieces`;
+  document.getElementById('phase-label').textContent = `PHASE 1: ${b.name.toUpperCase()} BODY`;
+  renderPieces();
+}
+function renderPieces() {
+  const row = document.getElementById('pieces-row');
+  row.innerHTML = '';
+  for(let i=1;i<=6;i++) {
+    const box = document.createElement('div');
+    box.className = 'piece-box' + (state.pieces.has(i)?' filled':'');
+    box.textContent = state.pieces.has(i) ? `P${i} ✓` : `Piece ${i}`;
+    row.appendChild(box);
+  }
+  const pct = (state.pieces.size/6*100).toFixed(0);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${state.pieces.size} / 6`;
+}
+
+// Body slots: symbols = Piece 1..6
+const BODY_SYMBOLS = ['Piece 1','Piece 2','Piece 3','Piece 4','Piece 5','Piece 6'];
+function spin() {
+  if(state.spinning) return;
+  if(!spendCoins(20,'spin')) return;
+  state.spinning = true;
+  document.getElementById('spin-btn').disabled = true;
+  [0,1,2].forEach(i => {
+    document.getElementById('cb'+i).disabled = true;
+    document.getElementById('reel'+i).classList.add('spinning');
+  });
+  console.log('[Slots] Spinning body reels...');
+  const delay = 600 + Math.random()*400;
+  setTimeout(()=>{
+    state.reelResults = [0,1,2].map(()=>BODY_SYMBOLS[Math.floor(Math.random()*6)]);
+    [0,1,2].forEach(i=>{
+      document.getElementById('reel'+i).classList.remove('spinning');
+      document.getElementById('ri'+i).textContent = state.reelResults[i];
+      const pieceNum = parseInt(state.reelResults[i].replace('Piece ',''));
+      const alreadyHave = state.pieces.has(pieceNum);
+      const cb = document.getElementById('cb'+i);
+      cb.disabled = alreadyHave;
+      cb.textContent = alreadyHave ? 'HAVE IT' : 'COLLECT';
+    });
+    state.spinning = false;
+    document.getElementById('spin-btn').disabled = false;
+    console.log('[Slots] Results:', state.reelResults);
+  }, delay);
+}
+function collect(i) {
+  const sym = state.reelResults[i];
+  const pieceNum = parseInt(sym.replace('Piece ',''));
+  if(state.pieces.has(pieceNum)) { showToast('Already have that piece!'); return; }
+  state.pieces.add(pieceNum);
+  document.getElementById('cb'+i).disabled = true;
+  document.getElementById('cb'+i).textContent = 'HAVE IT';
+  renderPieces();
+  console.log(`[Slots] Collected Piece ${pieceNum} | Total: ${state.pieces.size}/6`);
+  showToast(`✅ Piece ${pieceNum} collected!`, 'var(--green)');
+  if(state.pieces.size===6) {
+    setTimeout(bodyComplete, 400);
+  }
+}
+function bodyComplete() {
+  console.log('[Phase 1] Body complete!');
+  console.log('[Phase 1] Body complete! Sound effect: "BOOM"');
+  document.getElementById('spin-btn').disabled = true;
+  show('body-complete-msg');
+  showToast('🎉 BODY COMPLETE!','var(--green)');
+  setTimeout(()=>{
+    hide('phase1b');
+    startPhase2();
+  }, 1800);
+}
+
+// ============================================================
+// PHASE 2: COMPONENTS
+// ============================================================
+function startPhase2() {
+  console.log('[Phase 2] Component selection started');
+  state.phase = 2;
+  state.compCatIdx = 0;
+  state.stats = {power:0,handling:0,efficiency:0,budget:0};
+  // seed body stats
+  const b = state.selectedBody;
+  state.stats.power = Math.round(b.power/2);
+  state.stats.handling = Math.round(b.handling/2);
+  state.stats.efficiency = Math.round(b.efficiency/2);
+  state.stats.budget = Math.round(b.budget/2);
+  show('phase2');
+  document.getElementById('phase-label').textContent = 'PHASE 2: COMPONENTS';
+  renderPhaseSteps();
+  renderCompCategory();
+  updateStats();
+  renderSummary();
+}
+function renderPhaseSteps() {
+  const row = document.getElementById('phase-steps');
+  row.innerHTML = '';
+  COMP_CATS.forEach((cat,i)=>{
+    const d = document.createElement('div');
+    d.className = 'pstep' + (i===state.compCatIdx?' active':i<state.compCatIdx?' done':'');
+    d.textContent = cat.toUpperCase();
+    row.appendChild(d);
+  });
+}
+function renderCompCategory() {
+  const cat = COMP_CATS[state.compCatIdx];
+  document.getElementById('comp-cat-label').textContent = `SELECT ${cat.toUpperCase()}`;
+  const items = COMPONENTS[cat];
+  const grid = document.getElementById('comp-grid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = items.length<=4 ? 'repeat(4,1fr)' : 'repeat(4,1fr)';
+  items.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'comp-card';
+    card.appendChild(imageEl(c.name, c.emoji));
+    const lbl = document.createElement('div');
+    lbl.className = 'card-label';
+    lbl.textContent = c.name.toUpperCase();
+    card.appendChild(lbl);
+    card.onclick = ()=>selectComp(c, card);
+    grid.appendChild(card);
+  });
+  state.selectedComp = null;
+  state.pendingComp = null;
+  const spinBtn = document.getElementById('spin-btn-comp');
+  spinBtn.disabled = true;
+  [0,1,2].forEach(i=>{
+    document.getElementById('cri'+i).textContent = '?';
+    document.getElementById('ccb'+i).disabled = true;
+  });
+}
+function selectComp(c, card) {
+  if(state.compSpinning) return;
+  if(!spendCoins(50,'component selection')) return;
+  document.querySelectorAll('.comp-card').forEach(el=>el.classList.remove('selected'));
+  card.classList.add('selected');
+  state.pendingComp = c;
+  document.getElementById('spin-btn-comp').disabled = false;
+  console.log('[Phase 2] Component selected:', c.name);
+  showToast(`${c.name} selected – spin to confirm!`, 'var(--neon2)');
+}
+function spinComp() {
+  if(!state.pendingComp || state.compSpinning) return;
+  state.compSpinning = true;
+  document.getElementById('spin-btn-comp').disabled = true;
+  [0,1,2].forEach(i=>{
+    document.getElementById('ccb'+i).disabled = true;
+    document.getElementById('creel'+i).classList.add('spinning');
+  });
+  console.log('[Phase 2] Spinning component reel for:', state.pendingComp.name);
+  const delay = 500 + Math.random()*300;
+  setTimeout(()=>{
+    [0,1,2].forEach(i=>{
+      document.getElementById('creel'+i).classList.remove('spinning');
+      document.getElementById('cri'+i).textContent = state.pendingComp.name;
+      document.getElementById('ccb'+i).disabled = false;
+    });
+    state.compSpinning = false;
+    state.compReelResults = [0,1,2].map(()=>state.pendingComp);
+    console.log('[Phase 2] Component reel shows:', state.pendingComp.name);
+  }, delay);
+}
+function collectComp(i) {
+  const c = state.pendingComp;
+  if(!c) return;
+  const cat = COMP_CATS[state.compCatIdx];
+  const key = cat.toLowerCase().replace(' ','');
+  // save to build
+  if(cat==='Engine') state.build.engine = c;
+  else if(cat==='Transmission') state.build.transmission = c;
+  else if(cat==='Wheels') state.build.wheels = c;
+  else if(cat==='Drive Type') { state.build.drive = c; c.drive = c.name; }
+  else if(cat==='Tech') state.build.tech = c;
+  // update stats
+  addStats(c);
+  updateStats();
+  renderSummary();
+  console.log(`[Phase 2] Collected ${cat}: ${c.name}`);
+  showToast(`✅ ${cat}: ${c.name} confirmed!`,'var(--green)');
+  [0,1,2].forEach(j=>document.getElementById('ccb'+j).disabled=true);
+  state.compCatIdx++;
+  if(state.compCatIdx>=COMP_CATS.length) {
+    state.build.body = state.selectedBody;
+    setTimeout(phase2Complete, 600);
+  } else {
+    renderPhaseSteps();
+    renderCompCategory();
+  }
+}
+function addStats(c) {
+  state.stats.power = Math.min(100, state.stats.power + Math.round((c.power||0)/4));
+  state.stats.handling = Math.min(100, state.stats.handling + Math.round((c.handling||0)/4));
+  state.stats.efficiency = Math.min(100, state.stats.efficiency + Math.round((c.efficiency||0)/4));
+  state.stats.budget = Math.min(100, state.stats.budget + Math.round((c.budget||0)/4));
+}
+function updateStats() {
+  ['power','handling','efficiency','budget'].forEach(k=>{
+    document.getElementById('bar-'+k).style.width = state.stats[k]+'%';
+    document.getElementById('val-'+k).textContent = state.stats[k];
+  });
+}
+function renderSummary() {
+  const row = document.getElementById('summary-items');
+  row.innerHTML = '';
+  const add = (cat, name, emoji) => {
+    const chip = document.createElement('div');
+    chip.className = 'summary-chip';
+    chip.innerHTML = `<span class="chip-cat">${cat}</span>${emoji} ${name}`;
+    row.appendChild(chip);
+  };
+  if(state.selectedBody) add('BODY', state.selectedBody.name, state.selectedBody.emoji);
+  if(state.build.engine) add('ENGINE', state.build.engine.name, state.build.engine.emoji);
+  if(state.build.transmission) add('TRANS', state.build.transmission.name, state.build.transmission.emoji);
+  if(state.build.wheels) add('WHEELS', state.build.wheels.name, state.build.wheels.emoji);
+  if(state.build.drive) add('DRIVE', state.build.drive.name, state.build.drive.emoji);
+  if(state.build.tech) add('TECH', state.build.tech.name, state.build.tech.emoji);
+}
+function phase2Complete() {
+  console.log('[Phase 2] Build locked in!', state.build);
+  show('phase2-complete');
+  showToast('🔒 Build Locked In!','var(--green)');
+}
+
+// ============================================================
+// PHASE 3: MISSION
+// ============================================================
+function startMission() {
+  console.log('[Phase 3] Starting mission phase');
+  hide('phase2');
+  show('phase3');
+  document.getElementById('phase-label').textContent = 'PHASE 3: MISSION';
+  const mission = MISSIONS[Math.floor(Math.random()*MISSIONS.length)];
+  state.mission = mission;
+  const b = state.selectedBody;
+  const compFlat = {
+    power: state.stats.power,
+    handling: state.stats.handling,
+    efficiency: state.stats.efficiency,
+    budget: state.stats.budget,
+    drive: state.build.drive ? state.build.drive.name : '',
+    tyres: '', // not a separate selection in this version
+    body: b.name,
+  };
+  let score = mission.score(b, compFlat);
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  let emoji, resultText, payout;
+  if(score>=80) { emoji='🏆🔥'; resultText='LEGENDARY RUN!'; payout=400+Math.round(score*5); }
+  else if(score>=60) { emoji='✅🎉'; resultText='SOLID RESULT!'; payout=200+Math.round(score*3); }
+  else if(score>=40) { emoji='😅'; resultText='DECENT ATTEMPT'; payout=80+score; }
+  else { emoji='💥😬'; resultText='CATASTROPHIC FAIL!'; payout=10; }
+  state.coins += payout;
+  updateCoins();
+  document.getElementById('mission-name').textContent = `${mission.emoji} ${mission.name}`;
+  document.getElementById('mission-desc').textContent = mission.desc;
+  document.getElementById('mission-result').textContent = emoji;
+  document.getElementById('mission-score').textContent = `Score: ${score}/100 — ${resultText}`;
+  document.getElementById('mission-payout').textContent = `+${payout} coins earned!`;
+  console.log(`[Phase 3] Mission: ${mission.name} | Score: ${score} | Payout: ${payout}`);
+  showToast(`${resultText} +${payout} coins!`, score>=60?'var(--green)':'var(--neon2)');
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetGame() {
+  console.log('[Game] Reset');
+  initState();
+  updateCoins();
+  document.getElementById('phase-label').textContent = 'PHASE 1: BODY';
+  hide('phase1b'); hide('phase2'); hide('phase3');
+  hide('body-complete-msg'); hide('phase2-complete');
+  show('phase1');
+  renderBodyGrid();
+  document.getElementById('body-complete-msg').classList.add('hidden');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+initState();
+renderBodyGrid();
+console.log('[Car Build Slots] Game initialized. Good luck!');
+</script>
+</body>
+</html>
+<!--
+=======================================================
+README — Car Build Slots
+=======================================================
+
+FILES REQUIRED:
+  car-build-slots.html   ← this file
+  images/                ← folder with all PNGs from the ZIP
+
+IMAGE FOLDER STRUCTURE:
+  images/Truck.png, Sedan.png, Coupe.png, Sports.png,
+  Convertible.png, SUV.png, Wagon.png, Van.png,
+  V12.png, V10.png, V8.png, V6.png, I6.png, Turbo.png,
+  Rotary.png, Electric.png, Manual.png, Auto.png, DCT.png,
+  CVT.png, Steel.png, Alloy.png, Forged.png, Carbon.png,
+  AllSeason.png, Summer.png, AllTerrain.png, Mud.png,
+  FWD.png, RWD.png, AWD.png,
+  GPS.png, Stereo.png, Phone.png, HUD.png
+
+UPLOAD TO GITHUB PAGES:
+  1. Create a new GitHub repo (e.g. car-build-slots)
+  2. Upload car-build-slots.html → rename to index.html
+  3. Create folder "images" and upload all PNG files into it
+  4. Go to Settings → Pages → Source: main branch / root
+  5. Your game is live at: https://yourusername.github.io/car-build-slots/
+
+LOCAL TEST:
+  Use a local server (not file://) to avoid CORS on images:
+    npx serve .
+  Then open http://localhost:3000
+=======================================================
+-->
