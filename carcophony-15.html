@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Carcophony 15 – Rebuild Legendary Cars</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Raleway:wght@400;600;700;900&display=swap');
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --dark: #0e0e0e;
+    --dark2: #1a1a1a;
+    --dark3: #252525;
+    --cream: #f5ead7;
+    --green: #4caf7d;
+    --red: #e04848;
+    --tile-border: #3a3020;
+    --shadow: 0 4px 24px rgba(0,0,0,0.7);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Raleway', sans-serif;
+    background: var(--dark);
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 50px),
+      repeating-linear-gradient(-45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 50px);
+  }
+
+  /* ===== VIEWS ===== */
+  .view { display: none; min-height: 100vh; }
+  .view.active { display: flex; flex-direction: column; }
+
+  /* ===== MAIN MENU ===== */
+  #menu {
+    align-items: center;
+    padding: 20px 16px 40px;
+  }
+
+  .logo-area {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-top: 10px;
+  }
+
+  .logo-area h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 10vw, 80px);
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    text-shadow: none;
+    filter: drop-shadow(0 2px 8px rgba(201,168,76,0.4));
+  }
+
+  .logo-area p {
+    font-size: clamp(12px, 3vw, 16px);
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    opacity: 0.85;
+  }
+
+  /* Car Cards */
+  .car-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 24px;
+  }
+
+  .car-card {
+    background: linear-gradient(135deg, var(--dark2), var(--dark3));
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .car-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .car-card:hover::before, .car-card:active::before { opacity: 1; }
+  .car-card:hover { border-color: var(--gold); transform: translateY(-1px); box-shadow: 0 6px 30px rgba(201,168,76,0.2); }
+  .car-card:active { transform: scale(0.98); }
+
+  .car-thumb {
+    width: 80px;
+    height: 54px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.2);
+    background: var(--dark3);
+  }
+
+  .car-thumb-fallback {
+    width: 80px;
+    height: 54px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .car-info { flex: 1; }
+  .car-info .car-name {
+    font-weight: 700;
+    font-size: clamp(14px, 3.5vw, 18px);
+    color: var(--cream);
+  }
+  .car-info .car-best {
+    font-size: 13px;
+    color: var(--gold);
+    margin-top: 3px;
+  }
+  .car-info .car-best.done { color: var(--green); }
+
+  .car-status {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  /* Series Panel */
+  .series-panel {
+    background: linear-gradient(135deg, var(--dark2), var(--dark3));
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .series-panel h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    color: var(--gold);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .series-panel p {
+    font-size: 14px;
+    color: var(--cream);
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  .series-panel .series-time {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin: 4px 0;
+  }
+
+  /* How to play */
+  .how-to {
+    max-width: 500px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(245,234,215,0.5);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .btn-clear {
+    background: none;
+    border: 1px solid rgba(224,72,72,0.4);
+    color: rgba(224,72,72,0.6);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+  /* ===== PLAY SCREEN ===== */
+  #play {
+    align-items: center;
+    padding: 12px 16px 24px;
+  }
+
+  .play-header {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .play-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(22px, 5vw, 32px);
+    letter-spacing: 2px;
+    color: var(--gold);
+  }
+
+  .sound-toggle {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--cream);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Raleway', sans-serif;
+    transition: all 0.2s;
+  }
+  .sound-toggle:hover { border-color: var(--gold); }
+
+  .stats-bar {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .stat-box {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .stat-box .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  .stat-box .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  /* PUZZLE GRID */
+  .puzzle-wrapper {
+    width: 100%;
+    max-width: min(90vw, 90vh - 220px, 460px);
+    aspect-ratio: 1;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .puzzle-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 100%;
+    height: 100%;
+    gap: 3px;
+    background: var(--dark);
+    border: 2px solid rgba(201,168,76,0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .tile {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    background-size: 400% 400%;
+    border: 1px solid rgba(0,0,0,0.4);
+    transition: transform 0.15s ease;
+    border-radius: 2px;
+  }
+
+  .tile:hover { filter: brightness(1.15); }
+  .tile:active { transform: scale(0.95); }
+
+  .tile.blank {
+    background: var(--dark) !important;
+    cursor: default;
+    border: 1px solid rgba(201,168,76,0.05);
+  }
+  .tile.blank:hover { filter: none; }
+
+  .tile-num {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    pointer-events: none;
+  }
+
+  /* Play buttons */
+  .play-buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), #a87c2e);
+    color: #000;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(201,168,76,0.4); }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .btn-secondary {
+    background: var(--dark3);
+    color: var(--cream);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); }
+  .btn-secondary:active { transform: scale(0.97); }
+
+  /* ===== WIN SCREEN ===== */
+  #win {
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .win-congrats {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 12vw, 96px);
+    letter-spacing: 6px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.5));
+    animation: pulse 2s ease-in-out infinite;
+    margin-bottom: 8px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.5)); }
+    50% { filter: drop-shadow(0 0 40px rgba(201,168,76,0.9)); }
+  }
+
+  .win-subtitle {
+    font-size: clamp(14px, 3.5vw, 18px);
+    color: var(--cream);
+    opacity: 0.9;
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+
+  .win-pb {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .win-car-img {
+    width: min(80vw, 380px);
+    border-radius: 12px;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 40px rgba(201,168,76,0.3);
+    margin-bottom: 20px;
+    animation: revealCar 0.8s ease-out both;
+    object-fit: cover;
+  }
+
+  @keyframes revealCar {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .win-series {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 10px;
+    padding: 12px 24px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--cream);
+    opacity: 0.85;
+  }
+
+  .win-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .btn-share {
+    background: linear-gradient(135deg, #1a91da, #0d6cb5);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-share:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(29,161,242,0.3); }
+
+  /* CONFETTI */
+  .confetti-container {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
+  }
+
+  /* Tile slide animation */
+  .tile.sliding {
+    z-index: 5;
+    transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 400px) {
+    .stats-bar { gap: 12px; }
+    .stat-box { padding: 8px 12px; }
+    .stat-box .stat-value { font-size: 22px; }
+  }
+
+  @media (min-height: 700px) and (min-width: 500px) {
+    .puzzle-wrapper { max-width: min(80vw, 60vh); }
+  }
+</style>
+</head>
+<body>
+
+<!-- AUDIO -->
+<audio id="snd-slide" preload="auto">
+  <source src="sounds/slide.mp3" type="audio/mpeg">
+</audio>
+<audio id="snd-win" preload="auto">
+  <source src="sounds/win.mp3" type="audio/mpeg">
+</audio>
+
+<!-- CONFETTI -->
+<div class="confetti-container" id="confetti"></div>
+
+<!-- ===== MAIN MENU ===== -->
+<div id="menu" class="view active">
+  <div class="logo-area">
+    <h1>Carcophony 15</h1>
+    <p>Rebuild Legendary Cars – Beat Your Best Times!</p>
+  </div>
+
+  <div class="car-grid" id="carGrid"></div>
+
+  <div class="series-panel">
+    <h3>Series Progress</h3>
+    <div class="series-time" id="seriesTime">—</div>
+    <p id="seriesStatus"></p>
+  </div>
+
+  <div class="how-to">
+    <strong>How to Play:</strong> Tap/click a tile next to the blank space to slide it. Rearrange all tiles to reveal the car. Fastest time wins!
+  </div>
+
+  <button class="btn-clear" onclick="clearAllScores()">Clear All Scores</button>
+</div>
+
+<!-- ===== PLAY SCREEN ===== -->
+<div id="play" class="view">
+  <div class="play-header" style="max-width:500px; width:100%;">
+    <div class="play-title" id="playTitle">—</div>
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊 On</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-box">
+      <div class="stat-label">Time</div>
+      <div class="stat-value" id="timerDisplay">00:00</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Moves</div>
+      <div class="stat-value" id="movesDisplay">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Best</div>
+      <div class="stat-value" id="bestDisplay">—</div>
+    </div>
+  </div>
+
+  <div class="puzzle-wrapper">
+    <div class="puzzle-grid" id="puzzleGrid"></div>
+  </div>
+
+  <div class="play-buttons">
+    <button class="btn-primary" onclick="startGame(currentCar)">Restart</button>
+    <button class="btn-secondary" onclick="showView('menu'); stopTimer()">Back to Menu</button>
+  </div>
+</div>
+
+<!-- ===== WIN SCREEN ===== -->
+<div id="win" class="view">
+  <div class="win-congrats">CONGRATS!</div>
+  <div class="win-subtitle" id="winSubtitle"></div>
+  <div class="win-pb" id="winPB"></div>
+  <img id="winCarImg" class="win-car-img" src="" alt="Car" onerror="this.style.display='none'">
+  <div class="win-series" id="winSeries"></div>
+  <div class="win-buttons">
+    <button class="btn-share" onclick="shareResult()">🐦 Post to X (Twitter)</button>
+    <button class="btn-primary" onclick="startGame(currentCar)">Play Again</button>
+    <button class="btn-secondary" onclick="showView('menu')">Back to Menu</button>
+  </div>
+</div>
+
+<script>
+// ===== CAR DATA =====
+const CARS = [
+  { id: '15', name: '#15 Ferrari F40',       img: 'images/15.png', color: '#b22222' },
+  { id: '5',  name: '#5 Porsche 959',         img: 'images/5.png',  color: '#c8c8c8' },
+  { id: '4',  name: '#4 Lamborghini Miura',   img: 'images/4.png',  color: '#daa520' },
+  { id: '18', name: '#18 McLaren F1',         img: 'images/18.png', color: '#4169e1' },
+  { id: '3',  name: '#3 Tesla Roadster',      img: 'images/3.png',  color: '#e05020' },
+];
+
+// ===== STATE =====
+let currentCar = null;
+let tiles = [];         // 1D array of 16 values (0 = blank, 1–15 = tiles)
+let moves = 0;
+let seconds = 0;
+let timerInterval = null;
+let timerStarted = false;
+let soundOn = true;
+let isAnimating = false;
+let interacted = false;
+
+// ===== STORAGE =====
+function lsKey(carId, type) { return `c15_${carId}_${type}`; }
+
+function getBest(carId) {
+  const t = localStorage.getItem(lsKey(carId, 'time'));
+  return t ? parseInt(t) : null;
+}
+
+function getBestMoves(carId) {
+  const m = localStorage.getItem(lsKey(carId, 'moves'));
+  return m ? parseInt(m) : null;
+}
+
+function saveBest(carId, secs, mv) {
+  const existing = getBest(carId);
+  let isNew = false;
+  if (existing === null || secs < existing) {
+    localStorage.setItem(lsKey(carId, 'time'), secs);
+    localStorage.setItem(lsKey(carId, 'moves'), mv);
+    isNew = true;
+  }
+  return isNew;
+}
+
+function getSeriesData() {
+  let total = 0, count = 0;
+  for (const car of CARS) {
+    const t = getBest(car.id);
+    if (t !== null) { total += t; count++; }
+  }
+  return { total, count };
+}
+
+function fmtTime(secs) {
+  const m = Math.floor(secs / 60).toString().padStart(2, '0');
+  const s = (secs % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+// ===== VIEW MANAGEMENT =====
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  if (name === 'menu') renderMenu();
+}
+
+// ===== MENU =====
+function renderMenu() {
+  const grid = document.getElementById('carGrid');
+  grid.innerHTML = '';
+
+  for (const car of CARS) {
+    const best = getBest(car.id);
+    const done = best !== null;
+
+    const card = document.createElement('div');
+    card.className = 'car-card';
+    card.onclick = () => startGame(car);
+
+    // Thumbnail
+    const img = document.createElement('img');
+    img.className = 'car-thumb';
+    img.src = car.img;
+    img.alt = car.name;
+    img.onerror = function() {
+      this.style.display = 'none';
+      const fb = document.createElement('div');
+      fb.className = 'car-thumb-fallback';
+      fb.style.background = car.color;
+      fb.textContent = '🚗';
+      this.parentNode.insertBefore(fb, this);
+    };
+
+    const info = document.createElement('div');
+    info.className = 'car-info';
+    info.innerHTML = `
+      <div class="car-name">${car.name}</div>
+      <div class="car-best ${done ? 'done' : ''}">
+        ${done ? `✅ Best: ${fmtTime(best)}` : 'Not yet completed'}
+      </div>
+    `;
+
+    const status = document.createElement('div');
+    status.className = 'car-status';
+    status.textContent = done ? '✓' : '›';
+
+    card.appendChild(img);
+    card.appendChild(info);
+    card.appendChild(status);
+    grid.appendChild(card);
+  }
+
+  // Series
+  const { total, count } = getSeriesData();
+  document.getElementById('seriesTime').textContent = count > 0 ? fmtTime(total) : '—';
+  const statusEl = document.getElementById('seriesStatus');
+  if (count === 5) {
+    statusEl.textContent = `🏆 Series Master! All 5 completed. Total: ${fmtTime(total)}`;
+    statusEl.style.color = '#c9a84c';
+  } else {
+    statusEl.textContent = `Completed: ${count}/5 | Complete all 5 for Series Master!`;
+    statusEl.style.color = '';
+  }
+}
+
+// ===== PUZZLE LOGIC =====
+function solvedState() { return Array.from({length: 16}, (_, i) => i); }
+
+function blankIdx() { return tiles.indexOf(0); }
+
+function getNeighbours(idx) {
+  const row = Math.floor(idx / 4), col = idx % 4;
+  const n = [];
+  if (row > 0) n.push(idx - 4);
+  if (row < 3) n.push(idx + 4);
+  if (col > 0) n.push(idx - 1);
+  if (col < 3) n.push(idx + 1);
+  return n;
+}
+
+function shuffle() {
+  tiles = solvedState();
+  const count = 1500 + Math.floor(Math.random() * 500);
+  let prevBlank = -1;
+  for (let i = 0; i < count; i++) {
+    const blank = blankIdx();
+    const nbrs = getNeighbours(blank).filter(n => n !== prevBlank);
+    const pick = nbrs[Math.floor(Math.random() * nbrs.length)];
+    prevBlank = blank;
+    tiles[blank] = tiles[pick];
+    tiles[pick] = 0;
+  }
+}
+
+function isSolved() {
+  for (let i = 0; i < 15; i++) if (tiles[i] !== i + 1) return false;
+  if (tiles[15] !== 0) return false;
+  return true;
+}
+
+// ===== RENDER GRID =====
+function renderGrid() {
+  const grid = document.getElementById('puzzleGrid');
+  grid.innerHTML = '';
+  const wrapper = document.querySelector('.puzzle-wrapper');
+  const size = wrapper.offsetWidth;
+  const tileSize = (size - 3 * 3 - 4) / 4;
+
+  for (let i = 0; i < 16; i++) {
+    const val = tiles[i];
+    const tile = document.createElement('div');
+    tile.className = 'tile' + (val === 0 ? ' blank' : '');
+    tile.dataset.idx = i;
+
+    if (val !== 0) {
+      // val ranges 1–15, positions 0–14 in solved (val-1)
+      const solvedRow = Math.floor((val - 1) / 4);
+      const solvedCol = (val - 1) % 4;
+      tile.style.backgroundImage = `url(${currentCar.img})`;
+      tile.style.backgroundSize = `${tileSize * 4 + 4}px ${tileSize * 4 + 4}px`;
+      tile.style.backgroundPosition = `-${solvedCol * (tileSize + 1)}px -${solvedRow * (tileSize + 1)}px`;
+      tile.style.backgroundRepeat = 'no-repeat';
+
+      // Number label
+      const num = document.createElement('div');
+      num.className = 'tile-num';
+      num.textContent = val;
+      tile.appendChild(num);
+    }
+
+    tile.onclick = () => tryMove(i);
+    grid.appendChild(tile);
+  }
+}
+
+// ===== MOVE =====
+function tryMove(idx) {
+  if (isAnimating) return;
+  const blank = blankIdx();
+  if (!getNeighbours(blank).includes(idx)) return;
+
+  if (!timerStarted) { startTimer(); timerStarted = true; }
+  interacted = true;
+
+  // Swap
+  tiles[blank] = tiles[idx];
+  tiles[idx] = 0;
+  moves++;
+  document.getElementById('movesDisplay').textContent = moves;
+
+  playSound('slide');
+  renderGrid();
+
+  if (isSolved()) {
+    setTimeout(handleWin, 200);
+  }
+}
+
+// ===== TIMER =====
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    seconds++;
+    document.getElementById('timerDisplay').textContent = fmtTime(seconds);
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  stopTimer();
+  seconds = 0;
+  timerStarted = false;
+  document.getElementById('timerDisplay').textContent = '00:00';
+}
+
+// ===== START GAME =====
+function startGame(car) {
+  currentCar = car;
+  moves = 0;
+  isAnimating = false;
+  resetTimer();
+
+  document.getElementById('playTitle').textContent = car.name;
+  document.getElementById('movesDisplay').textContent = '0';
+
+  const best = getBest(car.id);
+  document.getElementById('bestDisplay').textContent = best !== null ? fmtTime(best) : '—';
+
+  shuffle();
+  showView('play');
+  renderGrid();
+
+  // Sound toggle display
+  soundOn = localStorage.getItem('c15_sound') !== 'off';
+  document.getElementById('soundToggle').textContent = soundOn ? '🔊 On' : '🔇 Off';
+}
+
+// ===== WIN =====
+function handleWin() {
+  stopTimer();
+  playSound('win');
+
+  const isNew = saveBest(currentCar.id, seconds, moves);
+  const { total, count } = getSeriesData();
+
+  document.getElementById('winSubtitle').textContent =
+    `You rebuilt the ${currentCar.name} in ${fmtTime(seconds)} (${moves} moves)!`;
+
+  document.getElementById('winPB').textContent = isNew ? '🎉 New Personal Best!' : `Personal Best: ${fmtTime(getBest(currentCar.id))}`;
+
+  const carImg = document.getElementById('winCarImg');
+  carImg.src = currentCar.img;
+  carImg.style.display = '';
+
+  document.getElementById('winSeries').textContent =
+    count === 5
+      ? `🏆 Series Master! Total: ${fmtTime(total)}`
+      : `Series: ${count}/5 completed | Running total: ${fmtTime(total)}`;
+
+  launchConfetti();
+  showView('win');
+}
+
+// ===== SOUND =====
+function playSound(name) {
+  if (!soundOn || !interacted) return;
+  const el = document.getElementById('snd-' + name);
+  if (!el) return;
+  try {
+    el.currentTime = 0;
+    el.play().catch(() => {});
+  } catch(e) {}
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  localStorage.setItem('c15_sound', soundOn ? 'on' : 'off');
+  document.getElementById('soundToggle').textContent = soundOn ? '🔊 On' : '🔇 Off';
+}
+
+// ===== SHARE =====
+function shareResult() {
+  const { total, count } = getSeriesData();
+  const seriesPart = count === 5 ? ` Series total: ${fmtTime(total)} 🏆` : '';
+  const text = `Smashed Carcophony 15! Rebuilt ${currentCar.name} in ${fmtTime(seconds)} (${moves} moves).${seriesPart} 🚗 Play at https://carcophony.github.io/carcophony-15.html`;
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+// ===== CLEAR SCORES =====
+function clearAllScores() {
+  if (!confirm('Clear all scores and best times? This cannot be undone.')) return;
+  for (const car of CARS) {
+    localStorage.removeItem(lsKey(car.id, 'time'));
+    localStorage.removeItem(lsKey(car.id, 'moves'));
+  }
+  renderMenu();
+}
+
+// ===== CONFETTI =====
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#c9a84c', '#f0d080', '#e04848', '#4caf7d', '#4169e1', '#fff'];
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left = Math.random() * 100;
+    const delay = Math.random() * 1.5;
+    const dur = 2.5 + Math.random() * 2;
+    const size = 6 + Math.random() * 8;
+    const shape = Math.random() > 0.5 ? '50%' : '0';
+    piece.style.cssText = `
+      left: ${left}%;
+      background: ${color};
+      width: ${size}px;
+      height: ${size}px;
+      border-radius: ${shape};
+      animation-duration: ${dur}s;
+      animation-delay: ${delay}s;
+    `;
+    container.appendChild(piece);
+  }
+  setTimeout(() => { container.innerHTML = ''; }, 5000);
+}
+
+// ===== TOUCH SUPPORT =====
+document.addEventListener('touchstart', function() { interacted = true; }, { once: true, passive: true });
+document.addEventListener('click', function() { interacted = true; }, { once: true });
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('play').classList.contains('active')) return;
+  const blank = blankIdx();
+  let target = -1;
+  if (e.key === 'ArrowUp')    target = blank + 4;
+  if (e.key === 'ArrowDown')  target = blank - 4;
+  if (e.key === 'ArrowLeft')  target = blank + 1;
+  if (e.key === 'ArrowRight') target = blank - 1;
+  if (target >= 0 && target < 16 && getNeighbours(blank).includes(target)) {
+    tryMove(target);
+  }
+  e.preventDefault();
+});
+
+// ===== INIT =====
+renderMenu();
+
+// Re-render grid on resize for proper background positioning
+window.addEventListener('resize', () => {
+  if (document.getElementById('play').classList.contains('active') && currentCar) {
+    renderGrid();
+  }
+});
+</script>
+</body>
+</html>
