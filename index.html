@@ -1,663 +1,731 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Lottery - Game #1</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CARCOPHONY — The Automotive Game Universe</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-dim: #B8960C;
+    --red: #E8002D;
+    --dark: #0A0A0A;
+    --darker: #050505;
+    --panel: #111111;
+    --panel2: #161616;
+    --border: #2A2A2A;
+    --text: #E8E8E8;
+    --muted: #888;
+    --green: #00FF88;
+    --blue: #00BFFF;
+  }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
 
-        h1 {
-            text-align: center;
-            color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 40px 20px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(232,0,45,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,215,0,0.06) 0%, transparent 60%),
+      var(--darker);
+    overflow: hidden;
+  }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,215,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,215,0,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 0%, transparent 80%);
+  }
 
-        .grid-section {
-            margin-bottom: 30px;
-        }
+  .hero-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--gold), var(--red), transparent);
+  }
 
-        .grid-title {
-            text-align: center;
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 20px;
-        }
+  .logo-wrap {
+    position: relative;
+    margin-bottom: 16px;
+    animation: fadeDown 0.8s ease both;
+  }
 
-        .car-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-bottom: 30px;
-        }
+  .hero-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(18px, 3.5vw, 28px);
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 20px auto 36px;
+    animation: fadeUp 0.9s 0.2s ease both;
+  }
+  .hero-tagline strong { color: var(--text); font-weight: 600; }
 
-        .car-cell {
-            aspect-ratio: 1;
-            border: 3px solid #ddd;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f9f9f9;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+  .hero-cta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.9s 0.4s ease both;
+  }
 
-        .car-cell img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), #8B0000);
+    color: #fff;
+    box-shadow: 0 0 30px rgba(232,0,45,0.3);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #FF1A3D, var(--red));
+    box-shadow: 0 0 50px rgba(232,0,45,0.5);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+  }
+  .btn-outline:hover {
+    background: rgba(255,215,0,0.08);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
 
-        .car-number {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    font-family: 'Orbitron', sans-serif;
+    animation: pulse 2s infinite;
+  }
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 2px solid var(--gold-dim);
+    border-bottom: 2px solid var(--gold-dim);
+    transform: rotate(45deg);
+  }
 
-        .car-cell.highlight {
-            border-color: #667eea;
-            background: #e8ecff;
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+  .stats-bar {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: clamp(24px, 6vw, 80px);
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
+  }
 
-        .car-cell.winner {
-            border-color: #10b981;
-            background: #d1fae5;
-            animation: pulse 1s infinite;
-        }
+  section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .section-eyebrow {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 7vw, 72px);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .section-title span { color: var(--gold); }
+  .section-desc {
+    color: var(--muted);
+    max-width: 560px;
+    margin: 16px auto 0;
+    font-size: 17px;
+    font-weight: 300;
+  }
 
-        .play-section {
-            text-align: center;
-            margin: 40px 0;
-        }
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+  }
 
-        .play-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 20px 60px;
-            font-size: 1.5em;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
+  .game-card {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px 28px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    overflow: hidden;
+    display: block;
+  }
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .game-card:hover {
+    background: var(--panel2);
+    border-color: var(--card-accent, var(--gold));
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .game-card:hover::before { transform: scaleX(1); }
 
-        .play-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-        }
+  .game-icon { font-size: 40px; margin-bottom: 16px; display: block; }
+  .game-tier {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--gold));
+    margin-bottom: 8px;
+  }
+  .game-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .game-desc {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .game-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .game-play-btn {
+    position: absolute;
+    bottom: 28px; right: 28px;
+    width: 42px; height: 42px;
+    background: var(--card-accent, var(--gold));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.25s;
+  }
+  .game-card:hover .game-play-btn { opacity: 1; transform: scale(1); }
+  .play-triangle {
+    width: 0; height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 12px solid #000;
+    margin-left: 2px;
+  }
 
-        .play-button:active {
-            transform: translateY(-1px);
-        }
+  /* ── CARD STUDIO special glow ── */
+  .game-card.card-studio-entry:hover {
+    box-shadow: 0 20px 60px rgba(233,69,96,0.25);
+  }
 
-        .play-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+  .passport-section {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 20px;
+  }
+  .passport-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  @media (max-width: 700px) { .passport-inner { grid-template-columns: 1fr; } }
 
-        .ticket-section {
-            display: none;
-            margin: 30px 0;
-            padding: 30px;
-            background: #f0f4ff;
-            border-radius: 15px;
-        }
+  .passport-card {
+    background: var(--darker);
+    border: 1px solid var(--gold-dim);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .passport-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+  }
+  .passport-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+  .passport-badge {
+    width: 50px; height: 50px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .passport-id { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--gold-dim); letter-spacing: 0.2em; }
+  .passport-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.05em; }
+  .passport-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .pstat { background: var(--panel); padding: 12px; border-radius: 2px; text-align: center; }
+  .pstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold); line-height: 1; }
+  .pstat-lbl { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; font-family: 'Orbitron', sans-serif; }
+  .passport-bar { margin-top: 16px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); border-radius: 3px; width: var(--pct, 0%); animation: barGrow 1.5s 0.5s ease both; }
+  .passport-text h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 6vw, 60px); line-height: 1; margin-bottom: 20px; }
+  .passport-text h2 span { color: var(--gold); }
+  .passport-text p { color: var(--muted); margin-bottom: 14px; font-weight: 300; }
 
-        .ticket-section.show {
-            display: block;
-            animation: slideIn 0.5s ease;
-        }
+  .social-section { text-align: center; padding: 80px 20px; max-width: 800px; margin: 0 auto; }
+  .social-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
+  .social-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 28px; border: 1px solid var(--border);
+    border-radius: 2px; text-decoration: none; color: var(--text);
+    font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.1em; transition: all 0.2s; background: var(--panel);
+  }
+  .social-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .social-btn svg { width: 20px; height: 20px; }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  .tweet-box {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 3px solid var(--gold); padding: 24px 28px;
+    text-align: left; max-width: 560px; margin: 40px auto 0;
+    font-style: italic; color: var(--muted); font-size: 17px; line-height: 1.6;
+  }
+  .tweet-box strong { color: var(--gold); font-style: normal; }
 
-        .ticket-title {
-            text-align: center;
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 20px;
-        }
+  footer { background: var(--darker); border-top: 1px solid var(--border); padding: 40px 20px; text-align: center; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 0.1em; color: var(--gold-dim); margin-bottom: 12px; }
+  .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.2em; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy { color: #444; font-size: 13px; font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; }
 
-        .ticket-cars {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
+  .stripe-divider { height: 3px; background: repeating-linear-gradient(90deg, var(--red) 0, var(--red) 30px, var(--darker) 30px, var(--darker) 40px); opacity: 0.5; }
 
-        .ticket-car {
-            width: 150px;
-            border: 3px solid #667eea;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  @keyframes barGrow { from { width: 0; } to { width: var(--pct, 0%); } }
 
-        .ticket-car img {
-            width: 100%;
-            height: 120px;
-            object-fit: contain;
-            background: #f9f9f9;
-        }
-
-        .ticket-car-number {
-            background: #667eea;
-            color: white;
-            text-align: center;
-            padding: 8px;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .result-section {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .result-message {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding: 30px;
-            border-radius: 15px;
-        }
-
-        .result-message.winner {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            animation: celebrate 1s ease;
-        }
-
-        .result-message.loser {
-            background: #fee;
-            color: #dc2626;
-        }
-
-        @keyframes celebrate {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.1) rotate(2deg); }
-            75% { transform: scale(1.1) rotate(-2deg); }
-        }
-
-        .winner-info {
-            background: #fffbeb;
-            border: 2px solid #fbbf24;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .winner-info.show {
-            display: block;
-        }
-
-        .winner-code {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #f59e0b;
-            margin: 10px 0;
-            padding: 15px;
-            background: white;
-            border-radius: 5px;
-            font-family: monospace;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .action-button {
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .action-button.primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .action-button.primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .action-button.secondary {
-            background: #e5e7eb;
-            color: #333;
-        }
-
-        .action-button.secondary:hover {
-            background: #d1d5db;
-            transform: translateY(-2px);
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f9fafb;
-            border-radius: 10px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .info-box {
-            background: #eff6ff;
-            border-left: 4px solid #3b82f6;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .car-grid {
-                gap: 5px;
-            }
-
-            .play-button {
-                padding: 15px 40px;
-                font-size: 1.2em;
-            }
-
-            .ticket-car {
-                width: 120px;
-            }
-        }
-    </style>
+  @media (max-width: 600px) {
+    .games-grid { grid-template-columns: 1fr; gap: 1px; }
+    .stats-bar { gap: 20px; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏎️ Car Lottery Game #1</h1>
-        <p class="subtitle">Answer correctly and win amazing prizes!</p>
 
-        <div class="info-box">
-            <strong>How to Play:</strong> Click "Generate My Ticket" to get 5 random cars. If they form a winning line (same color or same car model), you WIN! 🎉
-        </div>
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-stripe"></div>
 
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number" id="totalPlays">0</div>
-                <div class="stat-label">Times Played</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">1 in 5,313</div>
-                <div class="stat-label">Odds of Winning</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="totalWinners">0</div>
-                <div class="stat-label">Winners Today</div>
-            </div>
-        </div>
+  <div class="logo-wrap" style="animation: fadeDown 0.8s ease both; text-align:center; width: clamp(300px, 80vw, 620px); margin: 0 auto 16px;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="100%" height="auto">
+      <defs>
+        <style>@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Orbitron:wght@400&amp;display=swap');</style>
+        <linearGradient id="hGold" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stop-color="#FFFFFF"/>
+          <stop offset="40%"  stop-color="#FFD700"/>
+          <stop offset="100%" stop-color="#8B6800"/>
+        </linearGradient>
+        <linearGradient id="hRed" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stop-color="#E8002D"/>
+          <stop offset="100%" stop-color="#8B0000"/>
+        </linearGradient>
+        <linearGradient id="hLine" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="transparent"/>
+          <stop offset="15%"  stop-color="#FFD700"/>
+          <stop offset="85%"  stop-color="#FFD700"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="16" width="600" height="1.5" fill="url(#hLine)" opacity="0.5"/>
+      <rect x="549" y="17" width="9" height="9" fill="#ffffff" opacity="0.85"/>
+      <rect x="559" y="17" width="9" height="9" fill="#111111" opacity="0.9"/>
+      <rect x="569" y="17" width="9" height="9" fill="#ffffff" opacity="0.85"/>
+      <rect x="549" y="27" width="9" height="9" fill="#111111" opacity="0.9"/>
+      <rect x="559" y="27" width="9" height="9" fill="#ffffff" opacity="0.85"/>
+      <rect x="569" y="27" width="9" height="9" fill="#111111" opacity="0.9"/>
+      <polygon points="22,38 40,38 30,162 12,162" fill="url(#hRed)" opacity="0.9"/>
+      <text x="48" y="140" font-family="'Bebas Neue', sans-serif" font-size="114" letter-spacing="6" fill="url(#hGold)">CARCOPHONY</text>
+      <text x="50" y="166" font-family="'Orbitron', sans-serif" font-size="11" letter-spacing="8.5" fill="#B8960C" opacity="0.9">THE AUTOMOTIVE GAME UNIVERSE</text>
+      <rect x="0" y="181" width="600" height="1.5" fill="url(#hLine)" opacity="0.5"/>
+    </svg>
+  </div>
 
-        <div class="grid-section">
-            <h2 class="grid-title">The Grid (1-25)</h2>
-            <div class="car-grid" id="carGrid"></div>
-        </div>
+  <p class="hero-tagline">
+    New games landing all the time. One garage. <strong>Your collection grows with every win.</strong>
+    Free to play. Built for petrolheads.
+  </p>
 
-        <div class="play-section">
-            <button class="play-button" id="playButton">🎲 Generate My Ticket</button>
-        </div>
+  <div class="hero-cta-row">
+    <a href="#games" class="btn btn-primary">▶ &nbsp;PLAY NOW</a>
+    <a href="#whatsnew" class="btn btn-outline">🆕 &nbsp;WHAT'S NEW</a>
+    <a href="#passport" class="btn btn-outline">🏁 &nbsp;YOUR GARAGE</a>
+  </div>
 
-        <div class="ticket-section" id="ticketSection">
-            <h3 class="ticket-title">Your Cars:</h3>
-            <div class="ticket-cars" id="ticketCars"></div>
-            
-            <div class="result-section" id="resultSection"></div>
+  <div class="scroll-hint">
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">ALWAYS</div><div class="stat-label">Growing</div></div>
+  <div class="stat-item"><div class="stat-num">FREE</div><div class="stat-label">To Play</div></div>
+  <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">Universe</div></div>
+  <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Fun</div></div>
+</div>
+
+<!-- ── GAMES ── -->
+<section id="games">
+  <div class="section-header">
+    <div class="section-eyebrow">— Choose Your Race —</div>
+    <div class="section-title">THE <span>GAME</span> GRID</div>
+    <p class="section-desc">New games added regularly. Each one is evolving — expect updates, new features and surprises. Wins in one game unlock doors in another.</p>
+  </div>
+
+  <div class="games-grid">
+
+    <a href="https://carcophony.github.io/car-lottery/"
+       class="game-card" style="--card-accent: #FFD700;" target="_blank" rel="noopener">
+      <span class="game-icon">🎟️</span>
+      <div class="game-tier">★★★★ &nbsp;Legendary</div>
+      <div class="game-title">CAR LOTTERY</div>
+      <p class="game-desc">Draw five cars from the grid. Match by colour or model and you're a winner. The odds are steep — the glory is real. <em style="color:var(--gold-dim)">Active development — new features coming.</em></p>
+      <div class="game-tags"><span class="tag">LUCK</span><span class="tag">PRIZES</span><span class="tag">DAILY</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+    <a href="https://carcophony.github.io/Carcophony-Games/carcophony-garage.html"
+       class="game-card" style="--card-accent: #E8002D;" target="_blank" rel="noopener">
+      <span class="game-icon">🏎️</span>
+      <div class="game-tier">★★★ &nbsp;Epic</div>
+      <div class="game-title">CARCOPHONY GARAGE</div>
+      <p class="game-desc">Generate your random 3×3 grid of cars. Score is your total top speed. Screenshot and share to compete. Can you build the fastest garage? <em style="color:var(--gold-dim)">Early version — more scoring features in the works.</em></p>
+      <div class="game-tags"><span class="tag">SPEED</span><span class="tag">SHARE</span><span class="tag">COMPETE</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+    <a href="https://carcophony.github.io/car-lottery/garage-slots-v3.html"
+       class="game-card" style="--card-accent: #00FF88;" target="_blank" rel="noopener">
+      <span class="game-icon">🎰</span>
+      <div class="game-tier">★★★ &nbsp;Epic</div>
+      <div class="game-title">GARAGE SLOTS</div>
+      <p class="game-desc">Pull the lever. Five reels. Use your nudges wisely. Match five legendary cars to unlock premium game tiers and exclusive codes. <em style="color:var(--gold-dim)">v3 — evolving fast, more tiers planned.</em></p>
+      <div class="game-tags"><span class="tag">SLOTS</span><span class="tag">NUDGES</span><span class="tag">TIER UNLOCK</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+    <a href="https://carcophony.github.io/car-lottery/garage-slots-mobile.html"
+       class="game-card" style="--card-accent: #00BFFF;" target="_blank" rel="noopener">
+      <span class="game-icon">📱</span>
+      <div class="game-tier">★★★ &nbsp;Epic</div>
+      <div class="game-title">GARAGE SLOTS MOBILE</div>
+      <p class="game-desc">The full Garage Slots experience, built for your phone. Same cars, same nudges, same thrills — just perfectly sized for your pocket.</p>
+      <div class="game-tags"><span class="tag">MOBILE</span><span class="tag">SLOTS</span><span class="tag">ON-THE-GO</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+    <a href="https://carcophony.github.io/Carcophony-Games/carcophony-top-trumps.html"
+       class="game-card" style="--card-accent: #FF8C00;" target="_blank" rel="noopener">
+      <span class="game-icon">🃏</span>
+      <div class="game-tier">★★★★ &nbsp;Legendary</div>
+      <div class="game-title">TOP TRUMPS</div>
+      <p class="game-desc">Ferrari Collection Challenge. Battle the House card by card. Pick your strongest stat. Collect all four Ferraris to claim the ultimate prize. <em style="color:var(--gold-dim)">More marques and card packs coming soon.</em></p>
+      <div class="game-tags"><span class="tag">CARDS</span><span class="tag">STRATEGY</span><span class="tag">FERRARI</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+    <a href="https://carcophony.github.io/Carcophony-Games/carcophony-garage-reveal.html"
+       class="game-card" style="--card-accent: #CC44FF;" target="_blank" rel="noopener">
+      <span class="game-icon">🔍</span>
+      <div class="game-tier">★★ &nbsp;Rare</div>
+      <div class="game-title">GARAGE REVEAL</div>
+      <p class="game-desc">What's hiding behind the garage doors? Reveal your mystery cars one by one. Share the suspense — and the result — with the community.</p>
+      <div class="game-tags"><span class="tag">MYSTERY</span><span class="tag">REVEAL</span><span class="tag">SHARE</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+    <!-- ★ CARD STUDIO — NEW ★ -->
+    <a href="https://carcophony.github.io/card-studio.html"
+       class="game-card card-studio-entry" style="--card-accent: #E94560;" target="_blank" rel="noopener">
+      <span class="game-icon">🎨</span>
+      <div class="game-tier">★★★★ &nbsp;Legendary</div>
+      <div class="game-title">CARD STUDIO</div>
+      <p class="game-desc">Build your own Carcophony trading cards. Upload your car illustration, choose your racing colours, pick your edition — Standard, Hero, Duel or Trio. Download and collect. <em style="color:var(--gold-dim)">New — more features coming.</em></p>
+      <div class="game-tags"><span class="tag">CREATE</span><span class="tag">COLLECT</span><span class="tag">DOWNLOAD</span></div>
+      <div class="game-play-btn"><div class="play-triangle"></div></div>
+    </a>
+
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<!-- ── GARAGE PASSPORT ── -->
+<div class="passport-section" id="passport">
+  <div class="passport-inner">
+    <div class="passport-card">
+      <div class="passport-header">
+        <div class="passport-badge">🏁</div>
+        <div>
+          <div class="passport-id">GARAGE PASSPORT</div>
+          <div class="passport-name">DRIVER #0001</div>
         </div>
+      </div>
+      <div class="passport-stat-row">
+        <div class="pstat"><div class="pstat-num" id="gamesPlayed">0</div><div class="pstat-lbl">Played</div></div>
+        <div class="pstat"><div class="pstat-num" id="totalWins">0</div><div class="pstat-lbl">Wins</div></div>
+        <div class="pstat"><div class="pstat-num" id="carsOwned">0</div><div class="pstat-lbl">Cars</div></div>
+      </div>
+      <div class="passport-bar">
+        <div class="bar-label"><span>LEGEND STATUS</span><span id="legendPct">0%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="--pct: 0%;" id="legendBar"></div></div>
+      </div>
+      <div style="margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--muted); letter-spacing: 0.15em;">YOUR COLLECTION</div>
+      <div id="carCollection" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px;">
+        <span style="color: var(--muted); font-size: 14px; font-style: italic;">Play games to add cars to your garage…</span>
+      </div>
+    </div>
+    <div class="passport-text">
+      <h2>ONE GARAGE.<br><span>ALL YOUR WINS.</span></h2>
+      <p>Your Garage Passport tracks every game you play across the Carcophony universe. Wins, cars collected, and your legend status all live here — automatically saved to your browser.</p>
+      <p>Win big enough and you'll unlock tiers that open doors to exclusive game modes. The ecosystem is growing — your collection travels with you.</p>
+      <p style="color: var(--text); font-weight: 600;">Coming soon: share your passport card directly to X and challenge your followers.</p>
+      <div style="margin-top: 28px;"><a href="#games" class="btn btn-primary">START COLLECTING →</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="stripe-divider"></div>
+
+<!-- ── SOCIAL ── -->
+<div class="social-section">
+  <div class="section-header" style="margin-bottom: 0;">
+    <div class="section-eyebrow">— Find Us —</div>
+    <div class="section-title">JOIN THE <span>PIT LANE</span></div>
+    <p class="section-desc">Follow on X for new game drops, daily challenges, and community events. Share your wins — tag us and we'll retweet the best.</p>
+  </div>
+  <div class="social-links">
+    <a href="https://twitter.com/only9built" class="social-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.258 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      @ONLY9BUILT ON X
+    </a>
+    <a href="https://github.com/carcophony" class="social-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      GITHUB
+    </a>
+  </div>
+  <div class="tweet-box">
+    "Just hit a <strong>LEGENDARY F40</strong> clean sweep on Garage Slots! 🏆🔥 Come play for free at <strong>carcophony.com</strong> — @only9built #Carcophony #CarGames"
+  </div>
+</div>
+
+<div class="stripe-divider"></div>
+
+<!-- ── WHAT'S NEW ── -->
+<section id="whatsnew">
+  <div class="section-header">
+    <div class="section-eyebrow">— Latest from the Garage —</div>
+    <div class="section-title">WHAT'S <span>NEW</span></div>
+    <p class="section-desc">This universe is always under construction. Here's what's just landed and what's coming down the pit lane.</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 2px;">
+
+    <div style="background:var(--panel); border:1px solid var(--border); border-left: 3px solid #E94560; padding: 28px;">
+      <div style="font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:0.3em; color:#E94560; margin-bottom:10px;">🎨 JUST LAUNCHED</div>
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.05em; margin-bottom:8px;">CARD STUDIO</div>
+      <p style="color:var(--muted); font-size:15px; font-weight:300;">Build and download your own Carcophony trading cards. Four editions — Standard, Hero, Duel and Trio. Every car becomes a collectable family.</p>
     </div>
 
-    <script>
-        // Game configuration
-        const WINNING_LINES = [
-            // Same color (all different models)
-            [1, 10, 14, 18, 22],   // Green
-            [2, 6, 15, 19, 23],     // Red
-            [3, 7, 11, 20, 24],     // Yellow
-            [4, 8, 12, 16, 25],     // Pink
-            [5, 9, 13, 17, 21],     // Blue
-            // Same model (all different colors)
-            [1, 8, 15, 17, 24],     // F40
-            [2, 9, 11, 18, 25],     // F1
-            [3, 10, 12, 19, 21],    // Tesla
-            [4, 6, 13, 20, 22],     // Miura
-            [5, 7, 14, 16, 23]      // 959
-        ];
+    <div style="background:var(--panel); border:1px solid var(--border); border-left: 3px solid var(--green); padding: 28px;">
+      <div style="font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:0.3em; color:var(--green); margin-bottom:10px;">🟢 JUST LANDED</div>
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.05em; margin-bottom:8px;">GARAGE SLOTS v3</div>
+      <p style="color:var(--muted); font-size:15px; font-weight:300;">The nudge system gets a full overhaul. A bigger bank, tiered win codes, and the legendary F40 clean sweep. Pull the lever.</p>
+    </div>
 
-        const LINE_NAMES = [
-            "All Green Cars", "All Red Cars", "All Yellow Cars", "All Pink Cars", "All Blue Cars",
-            "All Ferrari F40s", "All McLaren F1s", "All Tesla Roadsters", "All Lamborghini Miuras", "All Porsche 959s"
-        ];
+    <div style="background:var(--panel); border:1px solid var(--border); border-left: 3px solid var(--gold); padding: 28px;">
+      <div style="font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:0.3em; color:var(--gold); margin-bottom:10px;">⭐ NEW GAME</div>
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.05em; margin-bottom:8px;">TOP TRUMPS</div>
+      <p style="color:var(--muted); font-size:15px; font-weight:300;">Card battles arrive in the Carcophony universe. Collect all four Ferraris to win the ultimate prize. More marques planned.</p>
+    </div>
 
-        let totalPlays = 0;
-        let totalWinners = 0;
-        let currentTicket = [];
+    <div style="background:var(--panel); border:1px solid var(--border); border-left: 3px solid var(--red); padding: 28px;">
+      <div style="font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:0.3em; color:var(--red); margin-bottom:10px;">🔴 COMING SOON</div>
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.05em; margin-bottom:8px;">NEXT GAME: ???</div>
+      <p style="color:var(--muted); font-size:15px; font-weight:300;">Something new is always in the workshop. Follow <a href="https://twitter.com/only9built" style="color:var(--gold); text-decoration:none;" target="_blank">@only9built</a> on X for the first look at every new drop.</p>
+    </div>
 
-        // Log play to external counter
-        async function logPlay() {
-            try {
-                // Using CountAPI - free, simple counter
-                const response = await fetch('https://api.countapi.xyz/hit/carcophony-carlottery/plays');
-                const data = await response.json();
-                console.log('Total plays across all users:', data.value);
-            } catch (error) {
-                console.log('Counter unavailable, continuing anyway');
-            }
-        }
+  </div>
 
-        // Initialize grid
-        function initGrid() {
-            const grid = document.getElementById('carGrid');
-            for (let i = 1; i <= 25; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'car-cell';
-                cell.id = `cell-${i}`;
-                
-                const img = document.createElement('img');
-                img.src = `images/${i}.png`;
-                img.alt = `Car ${i}`;
-                
-                const number = document.createElement('div');
-                number.className = 'car-number';
-                number.textContent = i;
-                
-                cell.appendChild(img);
-                cell.appendChild(number);
-                grid.appendChild(cell);
-            }
-        }
+  <div style="margin-top: 28px; background:var(--panel); border:1px solid var(--border); border-top: 3px solid var(--gold); padding: 28px; text-align:center;">
+    <div style="font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:0.3em; color:var(--gold-dim); margin-bottom:10px;">THE BIGGER PICTURE</div>
+    <p style="max-width:640px; margin:0 auto; color:var(--muted); font-size:17px; font-weight:300; line-height:1.7;">
+      Carcophony is building a connected game ecosystem — wins and collections in one game will feed into others.
+      This is the early days of something big.
+      <strong style="color:var(--text);">Every game you play now makes you a founding member of the universe.</strong>
+    </p>
+  </div>
+</section>
 
-        // Generate random ticket
-        function generateTicket() {
-            const numbers = [];
-            while (numbers.length < 5) {
-                const num = Math.floor(Math.random() * 25) + 1;
-                if (!numbers.includes(num)) {
-                    numbers.push(num);
-                }
-            }
-            return numbers.sort((a, b) => a - b);
-        }
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">CARCOPHONY</div>
+  <div class="footer-links">
+    <a href="#games">Games</a>
+    <a href="#whatsnew">What's New</a>
+    <a href="#passport">My Garage</a>
+    <a href="https://carcophony.github.io/card-studio.html" target="_blank">Card Studio</a>
+    <a href="https://twitter.com/only9built" target="_blank">X / Twitter</a>
+    <a href="https://github.com/carcophony" target="_blank">GitHub</a>
+  </div>
+  <div class="footer-copy">© 2025 CARCOPHONY · carcophony.com · All games free to play</div>
+</footer>
 
-        // Check if ticket is a winner
-        function checkWinner(ticket) {
-            for (let i = 0; i < WINNING_LINES.length; i++) {
-                const line = WINNING_LINES[i];
-                if (line.every(num => ticket.includes(num))) {
-                    return { isWinner: true, lineIndex: i, line: line };
-                }
-            }
-            return { isWinner: false };
-        }
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 
-        // Generate unique winner code
-        function generateWinnerCode() {
-            const timestamp = Date.now().toString(36);
-            const random = Math.random().toString(36).substring(2, 7);
-            return `WIN-${timestamp}-${random}`.toUpperCase();
-        }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.bar-fill').forEach(el => observer.observe(el));
 
-        // Clear highlights
-        function clearHighlights() {
-            document.querySelectorAll('.car-cell').forEach(cell => {
-                cell.classList.remove('highlight', 'winner');
-            });
-        }
-
-        // Highlight ticket numbers
-        function highlightTicket(numbers, isWinner = false) {
-            clearHighlights();
-            numbers.forEach(num => {
-                const cell = document.getElementById(`cell-${num}`);
-                cell.classList.add(isWinner ? 'winner' : 'highlight');
-            });
-        }
-
-        // Display ticket
-        function displayTicket(numbers) {
-            const container = document.getElementById('ticketCars');
-            container.innerHTML = '';
-            
-            numbers.forEach(num => {
-                const carDiv = document.createElement('div');
-                carDiv.className = 'ticket-car';
-                
-                const img = document.createElement('img');
-                img.src = `images/${num}.png`;
-                img.alt = `Car ${num}`;
-                
-                const numberDiv = document.createElement('div');
-                numberDiv.className = 'ticket-car-number';
-                numberDiv.textContent = `Car #${num}`;
-                
-                carDiv.appendChild(img);
-                carDiv.appendChild(numberDiv);
-                container.appendChild(carDiv);
-            });
-        }
-
-        // Display result
-        function displayResult(result) {
-            const section = document.getElementById('resultSection');
-            section.innerHTML = '';
-
-            if (result.isWinner) {
-                const winnerCode = generateWinnerCode();
-                
-                section.innerHTML = `
-                    <div class="result-message winner">
-                        🎉 WINNER! 🎉
-                    </div>
-                    <p style="font-size: 1.3em; color: #059669; margin: 20px 0;">
-                        You got: <strong>${LINE_NAMES[result.lineIndex]}</strong>
-                    </p>
-                    <div class="winner-info show">
-                        <p style="font-size: 1.1em; margin-bottom: 10px;">
-                            <strong>🏆 Your Winner Code:</strong>
-                        </p>
-                        <div class="winner-code" id="winnerCode">${winnerCode}</div>
-                        <p style="margin-top: 15px; color: #92400e;">
-                            Screenshot this code and DM @Carcophony to claim your prize!
-                        </p>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-button primary" onclick="shareWin('${winnerCode}')">
-                            📱 Tweet My Win
-                        </button>
-                        <button class="action-button secondary" onclick="playAgain()">
-                            🔄 Play Again
-                        </button>
-                    </div>
-                `;
-                
-                totalWinners++;
-                document.getElementById('totalWinners').textContent = totalWinners;
-                
-                // Log winner (in real implementation, this would go to a backend)
-                logWinner(winnerCode, currentTicket, result.lineIndex);
-            } else {
-                section.innerHTML = `
-                    <div class="result-message loser">
-                        Not a winner this time! 😢
-                    </div>
-                    <p style="font-size: 1.2em; margin: 20px 0;">
-                        Try again - you could be the next winner!
-                    </p>
-                    <div class="action-buttons">
-                        <button class="action-button primary" onclick="playAgain()">
-                            🎲 Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        // Log winner to console (you'll replace this with actual storage)
-        function logWinner(code, numbers, lineIndex) {
-            const winner = {
-                timestamp: new Date().toISOString(),
-                code: code,
-                numbers: numbers,
-                winningLine: LINE_NAMES[lineIndex],
-                gameId: 1
-            };
-            
-            console.log('🏆 WINNER LOGGED:', winner);
-            
-            // Store in localStorage (temporary solution)
-            const winners = JSON.parse(localStorage.getItem('winners') || '[]');
-            winners.push(winner);
-            localStorage.setItem('winners', JSON.stringify(winners));
-            
-            // Also log to external service
-            logWinnerExternal(winner);
-        }
-
-        // Log winner to external service
-        async function logWinnerExternal(winner) {
-            try {
-                await fetch('https://api.countapi.xyz/hit/carcophony-carlottery/winners');
-            } catch (error) {
-                console.log('External winner logging unavailable');
-            }
-        }
-
-        // Share win on Twitter
-        function shareWin(code) {
-            const text = encodeURIComponent(`🎉 I just WON the Car Game! 🏎️\n\nWinner Code: ${code}\n\n@Carcophony\n\nPlay now and you could win too!`);
-            const url = encodeURIComponent(window.location.href);
-            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-        }
-
-        // Play again
-        function playAgain() {
-            document.getElementById('ticketSection').classList.remove('show');
-            document.getElementById('playButton').disabled = false;
-            clearHighlights();
-        }
-
-        // Main play function
-        document.getElementById('playButton').addEventListener('click', function() {
-            this.disabled = true;
-            
-            // Log the play
-            logPlay();
-            
-            // Generate ticket
-            currentTicket = generateTicket();
-            totalPlays++;
-            document.getElementById('totalPlays').textContent = totalPlays;
-            
-            // Display ticket
-            displayTicket(currentTicket);
-            highlightTicket(currentTicket);
-            
-            // Show ticket section
-            const ticketSection = document.getElementById('ticketSection');
-            ticketSection.classList.add('show');
-            
-            // Check for winner after a brief delay for effect
-            setTimeout(() => {
-                const result = checkWinner(currentTicket);
-                if (result.isWinner) {
-                    highlightTicket(currentTicket, true);
-                }
-                displayResult(result);
-            }, 500);
+  function loadPassport() {
+    try {
+      const raw = localStorage.getItem('carcophony_passport');
+      const data = raw ? JSON.parse(raw) : {};
+      const gamesPlayed = data.gamesPlayed || 0;
+      const totalWins   = data.totalWins   || 0;
+      const cars        = data.cars        || [];
+      document.getElementById('gamesPlayed').textContent = gamesPlayed;
+      document.getElementById('totalWins').textContent   = totalWins;
+      document.getElementById('carsOwned').textContent   = cars.length;
+      const pct = Math.min(100, Math.round((cars.length / 25) * 100));
+      document.getElementById('legendPct').textContent = pct + '%';
+      const bar = document.getElementById('legendBar');
+      bar.style.setProperty('--pct', pct + '%');
+      if (cars.length > 0) {
+        const col = document.getElementById('carCollection');
+        col.innerHTML = '';
+        cars.slice(0, 12).forEach(c => {
+          const chip = document.createElement('span');
+          chip.textContent = c;
+          chip.style.cssText = 'background:#1a1a1a;border:1px solid #2a2a2a;padding:4px 10px;border-radius:2px;font-size:13px;color:#aaa;';
+          col.appendChild(chip);
         });
-
-        // Initialize on load
-        initGrid();
-
-        // Admin function to view all winners (type viewWinners() in console)
-        window.viewWinners = function() {
-            const winners = JSON.parse(localStorage.getItem('winners') || '[]');
-            console.table(winners);
-            return winners;
-        };
-    </script>
+        if (cars.length > 12) {
+          const more = document.createElement('span');
+          more.textContent = '+' + (cars.length - 12) + ' more';
+          more.style.cssText = 'color:var(--gold);font-size:13px;padding:4px 0;';
+          col.appendChild(more);
+        }
+      }
+    } catch(err) { /* silent */ }
+  }
+  loadPassport();
+</script>
 </body>
 </html>
