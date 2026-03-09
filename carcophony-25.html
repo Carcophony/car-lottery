@@ -578,6 +578,160 @@
     100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
   }
 
+
+  /* ===== COMPLETED LINE CARD - GOLD BORDER ===== */
+  .line-card.completed {
+    border-color: rgba(201,168,76,0.7);
+    background: linear-gradient(135deg, #1f1c0f, #2a2510);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.15), inset 0 0 0 1px rgba(201,168,76,0.1);
+  }
+  .line-card.completed .line-status {
+    color: var(--gold);
+    font-size: 20px;
+  }
+
+  /* ===== SERIES MASTER PANEL ===== */
+  .series-panel.master {
+    background: linear-gradient(135deg, #1f1800, #2e2200, #1f1800);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 30px rgba(201,168,76,0.25), inset 0 0 40px rgba(201,168,76,0.05);
+    animation: masterGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes masterGlow {
+    0%,100% { box-shadow: 0 0 20px rgba(201,168,76,0.2), inset 0 0 30px rgba(201,168,76,0.04); }
+    50%      { box-shadow: 0 0 50px rgba(201,168,76,0.45), inset 0 0 60px rgba(201,168,76,0.1); }
+  }
+
+  .series-panel.master h3 {
+    font-size: 26px;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(201,168,76,0.5));
+  }
+
+  .series-panel.master .series-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 10px rgba(201,168,76,0.6));
+  }
+
+  .series-master-trophy {
+    font-size: 48px;
+    margin-bottom: 4px;
+    animation: trophyBounce 2s ease-in-out infinite;
+    display: block;
+  }
+
+  @keyframes trophyBounce {
+    0%,100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-6px) scale(1.08); }
+  }
+
+  .series-master-checks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin: 10px 0 6px;
+  }
+
+  .sm-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+    font-weight: 900;
+    animation: checkPop 0.4s ease-out both;
+  }
+
+  @keyframes checkPop {
+    0%   { transform: scale(0); opacity: 0; }
+    70%  { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ===== SERIES MASTER WIN BANNER ===== */
+  .series-master-banner {
+    display: none;
+    width: 100%;
+    max-width: 460px;
+    background: linear-gradient(135deg, #1f1800, #2e2200);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 20px 24px;
+    text-align: center;
+    margin-bottom: 16px;
+    box-shadow: 0 0 40px rgba(201,168,76,0.4);
+    animation: bannerDrop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .series-master-banner.show { display: block; }
+
+  @keyframes bannerDrop {
+    0%   { opacity: 0; transform: scale(0.7) translateY(-30px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .smb-trophy { font-size: 52px; display: block; margin-bottom: 6px; }
+
+  .smb-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 8vw, 56px);
+    letter-spacing: 5px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 40%, #fff 50%, var(--gold-light) 60%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 16px rgba(201,168,76,0.8));
+    animation: shimmer 3s linear infinite;
+    background-size: 200% auto;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .smb-subtitle {
+    font-size: 15px;
+    color: var(--cream);
+    opacity: 0.85;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .smb-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+  }
+
+  .smb-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(240,208,128,0.6);
+  }
+
   /* RESPONSIVE */
   @media (max-width: 400px) {
     .stats-bar { gap: 8px; }
@@ -665,7 +819,16 @@
 
 <!-- ===== WIN SCREEN ===== -->
 <div id="win" class="view">
-  <div class="win-congrats">LINE RACER!</div>
+  <!-- Series Master Banner (shown only on completing all 10) -->
+  <div class="series-master-banner" id="seriesMasterBanner">
+    <span class="smb-trophy">🏆</span>
+    <div class="smb-title">SERIES MASTER!</div>
+    <div class="smb-subtitle">You've conquered all 10 lines.<br>The ultimate Carcophony 25 achievement.</div>
+    <div class="smb-time" id="smbTime">—</div>
+    <div class="smb-label">Series Total Time</div>
+  </div>
+
+  <div class="win-congrats" id="winCongrats">LINE RACER!</div>
   <div class="win-subtitle" id="winSubtitle"></div>
   <div class="win-pb" id="winPB"></div>
   <div class="win-line-tiles" id="winLineTiles"></div>
@@ -772,7 +935,7 @@ function renderMenu() {
     const done = best !== null;
 
     const card = document.createElement('div');
-    card.className = 'line-card';
+    card.className = 'line-card' + (done ? ' completed' : '');
     card.onclick = () => startGame(line);
 
     // Colour dot
@@ -816,24 +979,49 @@ function renderMenu() {
     grid.appendChild(card);
   }
 
-  // Series
+  // Series panel
   const { total, count } = getSeriesData();
-  document.getElementById('seriesTime').textContent = count > 0 ? fmtTime(total) : '—';
-  const statusEl = document.getElementById('seriesStatus');
-  if (count === 10) {
-    statusEl.textContent = `🏆 Series Master! All 10 lines completed. Total: ${fmtTime(total)}`;
-    statusEl.style.color = '#c9a84c';
+  const panel = document.querySelector('.series-panel');
+  const isMaster = count === 10;
+
+  if (isMaster) {
+    panel.classList.add('master');
+    panel.innerHTML = `
+      <span class="series-master-trophy">🏆</span>
+      <h3>Series Master!</h3>
+      <div class="series-time" id="seriesTime">${fmtTime(total)}</div>
+      <div class="series-master-checks" id="masterChecks"></div>
+      <p style="color:var(--gold-light); font-size:13px; margin-top:4px;">All 10 lines conquered. Legend status achieved.</p>
+    `;
+    // Animate in the 10 gold check circles
+    const checks = panel.querySelector('#masterChecks');
+    LINES.forEach((line, i) => {
+      const c = document.createElement('div');
+      c.className = 'sm-check';
+      c.style.animationDelay = `${i * 0.08}s`;
+      c.style.borderColor = line.color;
+      c.style.color = line.color;
+      c.style.background = `${line.color}22`;
+      c.textContent = '✓';
+      checks.appendChild(c);
+    });
   } else {
-    statusEl.textContent = `Completed: ${count}/10 | Complete all 10 for Series Master!`;
-    statusEl.style.color = '';
+    panel.classList.remove('master');
+    panel.innerHTML = `
+      <h3>Series Progress</h3>
+      <div class="series-time" id="seriesTime">${count > 0 ? fmtTime(total) : '—'}</div>
+      <p id="seriesStatus">Completed: ${count}/10 | Complete all 10 for Series Master!</p>
+    `;
   }
 }
 
 // ===== PUZZLE LOGIC =====
 function solvedState() {
+  // Tiles 1-24 fill positions 0-23. Blank (0) fills position 24.
+  // The blank IS tile 25 — it lives in position 25 (index 24) when solved.
   const t = [];
-  for (let i = 1; i <= 25; i++) t.push(i);
-  t[24] = 0; // blank at position 24 (bottom-right)
+  for (let i = 1; i <= 24; i++) t.push(i);
+  t.push(0); // blank at index 24 = board position 25
   return t;
 }
 
@@ -864,16 +1052,17 @@ function shuffle() {
 }
 
 // ===== CHECK WIN =====
-// Win: the 5 target positions (0-indexed) contain exactly the 5 line numbers (1-indexed positions used as tile values)
+// Blank (0) at index 24 = board position 25. It counts as "tile 25" for win purposes.
+// For every target position: the tile there must equal the position number (1-indexed).
+// Special case: if position 25 (index 24) is a target, blank there counts as correct.
 function checkWin() {
   if (!currentLine) return false;
-  // targetLineIdxs: 0-indexed grid positions
-  // The tile VALUES that should be at those positions = their 1-indexed positions
-  // e.g. WIN_LINES[0] = [1,10,14,18,22] → positions 1,10,14,18,22 → tiles at those positions should be {1,10,14,18,22}
-  const targetSet = currentLine.positions.slice().sort((a,b)=>a-b);
-  const gotSet = targetLineIdxs.map(idx => tiles[idx]).filter(v => v !== 0).sort((a,b)=>a-b);
-  if (gotSet.length !== 5) return false;
-  return gotSet.every((v, i) => v === targetSet[i]);
+  return targetLineIdxs.every(idx => {
+    const needed = idx + 1;      // what tile number belongs here
+    const here   = tiles[idx];   // what is actually here (0 = blank)
+    if (needed === 25) return here === 0;  // blank IS tile 25
+    return here === needed;
+  });
 }
 
 // ===== RENDER GRID =====
@@ -909,10 +1098,10 @@ function renderGrid() {
     // Highlight target positions
     if (isTarget) {
       tile.classList.add('target-glow');
-      // Green only if this tile's value matches this exact position (val === i+1)
-      if (!isBlank && val === i + 1) {
-        tile.classList.add('in-place');
-      }
+      // Green if correct tile is here. Blank at index 24 = tile 25 = in-place.
+      const needed = i + 1;
+      const correct = (needed === 25) ? isBlank : (!isBlank && val === needed);
+      if (correct) tile.classList.add('in-place');
     }
 
     tile.onclick = () => tryMove(i);
@@ -927,8 +1116,11 @@ function updateTargetBadges() {
   if (!currentLine) return;
   const container = document.getElementById('targetLineNums');
   container.innerHTML = '';
-  // Which positions have the exactly correct tile (tile value === position number)?
-  const inPlace = new Set(targetLineIdxs.filter(idx => tiles[idx] === idx + 1).map(idx => idx + 1));
+  // Which positions have the correct tile? Blank at index 24 counts as tile 25.
+  const inPlace = new Set(targetLineIdxs.filter(idx => {
+    const needed = idx + 1;
+    return needed === 25 ? tiles[idx] === 0 : tiles[idx] === needed;
+  }).map(idx => idx + 1));
 
   for (const pos of currentLine.positions) {
     const badge = document.createElement('span');
@@ -1013,6 +1205,10 @@ function handleWin() {
 
   const isNew = saveBest(currentLine.id, seconds, moves);
   const { total, count } = getSeriesData();
+  const isMaster = count === 10;
+
+  // Headline
+  document.getElementById('winCongrats').textContent = isMaster ? 'ALL 10!' : 'LINE RACER!';
 
   document.getElementById('winSubtitle').textContent =
     `Nailed ${currentLine.name} in ${fmtTime(seconds)} (${moves} moves)!`;
@@ -1020,25 +1216,75 @@ function handleWin() {
   document.getElementById('winPB').textContent =
     isNew ? '🎉 New Personal Best!' : `Personal Best: ${fmtTime(getBest(currentLine.id))}`;
 
-  // Show winning tile images
+  // Show winning tile images. Position 25 = blank tile, show a styled placeholder.
   const winTiles = document.getElementById('winLineTiles');
   winTiles.innerHTML = '';
   for (const pos of currentLine.positions) {
-    const img = document.createElement('img');
-    img.className = 'win-tile-preview';
-    img.src = `images/${pos}.png`;
-    img.alt = `Tile ${pos}`;
-    img.onerror = function() { this.style.display='none'; };
-    winTiles.appendChild(img);
+    if (pos === 25) {
+      // Blank tile — render a gold-bordered empty square
+      const blank = document.createElement('div');
+      blank.style.cssText = 'width:60px;height:60px;border-radius:8px;border:2px dashed var(--gold);opacity:0.6;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--gold);animation:revealCar 0.6s ease-out both;animation-delay:0.4s;';
+      blank.textContent = '□';
+      winTiles.appendChild(blank);
+    } else {
+      const img = document.createElement('img');
+      img.className = 'win-tile-preview';
+      img.src = `images/${pos}.png`;
+      img.alt = `Tile ${pos}`;
+      img.onerror = function() { this.style.display='none'; };
+      winTiles.appendChild(img);
+    }
   }
 
   document.getElementById('winSeries').textContent =
-    count === 10
-      ? `🏆 Series Master! Total: ${fmtTime(total)}`
+    isMaster
+      ? `🏆 Series Master! All 10 lines conquered. Total: ${fmtTime(total)}`
       : `Series: ${count}/10 completed | Running total: ${fmtTime(total)}`;
 
-  launchConfetti();
+  // Series Master banner
+  const banner = document.getElementById('seriesMasterBanner');
+  if (isMaster) {
+    document.getElementById('smbTime').textContent = fmtTime(total);
+    banner.classList.add('show');
+    launchMasterConfetti();
+  } else {
+    banner.classList.remove('show');
+    launchConfetti();
+  }
+
   showView('win');
+}
+
+// ===== MEGA CONFETTI for Series Master =====
+function launchMasterConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#c9a84c','#f0d080','#ffffff','#ffe040','#ffb300','#4caf7d','#4169e1','#e04848','#e87db0','#f0d020'];
+  // Three waves of confetti
+  for (let wave = 0; wave < 3; wave++) {
+    for (let i = 0; i < 80; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const left = Math.random() * 100;
+      const delay = (wave * 1.2) + Math.random() * 1.0;
+      const dur = 2.5 + Math.random() * 2.5;
+      const size = 6 + Math.random() * 12;
+      const shapes = ['50%','0','0','4px'];
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      piece.style.cssText = `
+        left:${left}%;
+        background:${color};
+        width:${size}px;
+        height:${size * (Math.random() > 0.5 ? 1 : 2.5)}px;
+        border-radius:${shape};
+        animation-duration:${dur}s;
+        animation-delay:${delay}s;
+      `;
+      container.appendChild(piece);
+    }
+  }
+  setTimeout(() => { container.innerHTML = ''; }, 10000);
 }
 
 // ===== SOUND =====
@@ -1061,8 +1307,13 @@ function toggleSound() {
 // ===== SHARE =====
 function shareResult() {
   const { total, count } = getSeriesData();
-  const seriesPart = count === 10 ? ` Series PB: ${fmtTime(total)} 🏆` : ` Series: ${count}/10`;
-  const text = `Nailed ${currentLine.name} on Carcophony 25 in ${fmtTime(seconds)}!${seriesPart} 🚗 https://carcophony.github.io/car-lottery/carcophony-25.html`;
+  let text;
+  if (count === 10) {
+    text = `🏆 SERIES MASTER! Just conquered all 10 lines on Carcophony 25! Series total: ${fmtTime(total)}. Final line: ${currentLine.name} in ${fmtTime(seconds)}. Can you beat it? 🚗 https://carcophony.github.io/car-lottery/carcophony-25.html`;
+  } else {
+    const seriesPart = ` Series: ${count}/10`;
+    text = `Nailed ${currentLine.name} on Carcophony 25 in ${fmtTime(seconds)}!${seriesPart} 🚗 https://carcophony.github.io/car-lottery/carcophony-25.html`;
+  }
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 }
